@@ -22,7 +22,7 @@ if (args.env === 'development') {
 }
 
 // tslint:disable-next-line no-var-requires
-const secrets = require(path.resolve(__dirname, '..', 'secrets.json'));
+const secrets = process.env.BOT_TOKEN || require(path.resolve(__dirname, '..', 'secrets.json'));
 
 export {
   args,
