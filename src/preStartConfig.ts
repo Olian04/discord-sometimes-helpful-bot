@@ -21,6 +21,8 @@ if (args.env === 'development') {
   console.loglevel = 4;
 }
 
+console.log(process.env.BOT_TOKEN);
+
 // tslint:disable-next-line no-var-requires
 const secrets = process.env.BOT_TOKEN || require(path.resolve(__dirname, '..', 'secrets.json'));
 
