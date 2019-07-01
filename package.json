@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node dist/index.js env=development",
     "start:prod": "node dist/index.js env=production",
-    "build": "tsc",
+    "build": "rm -rf dist && tsc",
     "test": "mocha --recursive -r ts-node/register 'tests/**/*.test.ts' ",
     "lint": "tslint --fix -c ./tslint.json 'src/**/*{.ts,.tsx}'",
     "lint:nofix": "tslint -c ./tslint.json 'src/**/*{.ts,.tsx}'",
