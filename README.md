@@ -1,5 +1,5 @@
-# discord-raid-bot
-A discord chat bot that provides tools for raiding.
+# discord-sometimes-helpful-bot
+A discord chat bot that provides tools for orginizing and managing raiding.
 
 ## Features:
 
