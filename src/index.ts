@@ -1,7 +1,7 @@
 import { Client } from 'discord.js';
 import fs from 'fs';
 import path from 'path';
-import { args, secrets } from './preStartConfig';
+import { args, discord_token } from './preStartConfig';
 
 const client = new Client();
 
@@ -19,7 +19,7 @@ client.on('ready', ()  => {
 
 });
 
-client.login(secrets.discord_token)
+client.login(discord_token)
   .then(() => console.debug(`Login successful`))
   .catch((err) => {
     console.debug(`Login failed`);
