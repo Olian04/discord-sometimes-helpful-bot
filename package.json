@@ -34,7 +34,6 @@
     "better-logging": "^3.5.0",
     "chai": "^4.2.0",
     "discord.js": "^11.5.1",
-    "express": "^4.17.1",
     "mocha": "^6.1.4",
     "ts-node": "^8.3.0",
     "tslint": "^5.18.0",
