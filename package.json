@@ -4,14 +4,14 @@
   "description": "A discord chat bot that provides tools for raiding.",
   "main": "dist/index.js",
   "scripts": {
-    "start": "node dist/index.js env=production & node heroku_hack/index.js",
-    "start:dev": "node dist/index.js env=development",
+    "start:prod": "node dist/index.js env=production",
+    "start": "node dist/index.js env=development",
     "build": "rm -rf dist && tsc",
     "test": "mocha --recursive -r ts-node/register 'tests/**/*.test.ts' ",
     "lint": "tslint --fix -c ./tslint.json 'src/**/*{.ts,.tsx}'",
     "lint:nofix": "tslint -c ./tslint.json 'src/**/*{.ts,.tsx}'",
+    "prestart:prod": "npm run build",
     "prestart": "npm run build",
-    "prestart:dev": "npm run build",
     "prebuild": "npm run lint:nofix && npm run test"
   },
   "repository": {
