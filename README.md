@@ -4,7 +4,7 @@ A discord chat bot that provides tools for organizing and managing raiding.
 
 ## `!event [title]`
 
-![](assets/image.png)
+![](assets/event.png)
 
 
 ## Planned features
