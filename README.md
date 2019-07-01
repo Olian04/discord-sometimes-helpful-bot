@@ -1,15 +1,16 @@
 # discord-sometimes-helpful-bot
 A discord chat bot that provides tools for orginizing and managing raiding.
 
+## Commands
+
 ```
 ![command] [...args]
 ```
 
-## Commands
+### !event \[title\]
 
-| Command         | Description |
-|-----------------|-------------|
-| `event [title]` | ![](assets/image.png) |
+![](assets/image.png)
+
 
 ## Planned features
 
