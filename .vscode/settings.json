@@ -2,5 +2,5 @@
   "editor.codeActionsOnSave": {
     "source.fixAll": true
   },
-  "tslint.configFile": "tslint.js"
+  "tslint.configFile": "tslint.json"
 }

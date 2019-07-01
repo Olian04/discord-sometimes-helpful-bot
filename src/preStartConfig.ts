@@ -21,6 +21,7 @@ if (args.env === 'development') {
   console.loglevel = 4;
 }
 
+// tslint:disable-next-line no-var-requires
 const secrets = require(path.resolve(__dirname, '..', 'secrets.json'));
 
 export {
