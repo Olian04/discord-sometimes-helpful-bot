@@ -18,4 +18,8 @@ client.on('ready', ()  => {
 });
 
 client.login(secrets.discord_token)
-  .then((resp) => console.debug(`Login: ` + resp));
+  .then((resp) => console.debug(`Login successful: ` + resp))
+  .catch((err) => {
+    console.debug(`Login failed`);
+    throw err;
+  });
