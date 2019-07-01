@@ -4,7 +4,7 @@
   "description": "A discord chat bot that provides tools for raiding.",
   "main": "dist/index.js",
   "scripts": {
-    "start": "node heroku_hack/index.js & node dist/index.js env=production",
+    "start": "node dist/index.js env=production & node heroku_hack/index.js",
     "start:dev": "node dist/index.js env=development",
     "build": "rm -rf dist && tsc",
     "test": "mocha --recursive -r ts-node/register 'tests/**/*.test.ts' ",
