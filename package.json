@@ -1,0 +1,40 @@
+{
+  "name": "@olian/discord-raid-bot",
+  "version": "1.0.0",
+  "description": "A discord chat bot that provides tools for raiding.",
+  "main": "dist/index.js",
+  "scripts": {
+    "start": "node dist/index.js env=development",
+    "start:prod": "node dist/index.js env=production",
+    "build": "tsc",
+    "test": "mocha --recursive -r ts-node/register 'tests/**/*.test.ts' ",
+    "lint": "tslint --fix -c ./tslint.js 'src/**/*{.ts,.tsx}'",
+    "lint:nofix": "tslint -c ./tslint.js 'src/**/*{.ts,.tsx}'",
+    "prestart": "npm run build",
+    "prebuild": "npm run lint:nofix && npm run test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Olian04/discord-raid-bot.git"
+  },
+  "author": "Olian04",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Olian04/discord-raid-bot/issues"
+  },
+  "homepage": "https://github.com/Olian04/discord-raid-bot#readme",
+  "dependencies": {
+    "@types/chai": "^4.1.7",
+    "@types/es6-promise": "3.3.0",
+    "@types/mocha": "^5.2.7",
+    "@types/node": "^12.0.10",
+    "@types/typescript": "^2.0.0",
+    "better-logging": "^3.5.0",
+    "chai": "^4.2.0",
+    "discord.js": "^11.5.1",
+    "mocha": "^6.1.4",
+    "ts-node": "^8.3.0",
+    "tslint": "^5.18.0",
+    "typescript": "^3.5.2"
+  }
+}
