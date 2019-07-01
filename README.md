@@ -1,5 +1,5 @@
 # discord-sometimes-helpful-bot
-A discord chat bot that provides tools for orginizing and managing raiding.
+A discord chat bot that provides tools for organizing and managing raiding.
 
 
 ## `!event \[title\]`
