@@ -13,3 +13,4 @@ State that you are planning an event, then ppl may react with thumbs up/down or 
 
 * Ready check: Starting a ready check for a given voice chanel. Will display a checklist for all players in the voice channel. Will check as READY when a player reacts to the comment.
 * Automatic roll assignment based on the reacted emoji. 
+* Help command that shows what the bot can do.
