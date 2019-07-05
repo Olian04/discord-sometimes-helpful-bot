@@ -78,6 +78,8 @@ export const callback = (client: Client) => {
 
           reaction.users.forEach((user) => {
             if (user.bot) { return; }
+            reaction.remove(user); // Remove reaction
+
             const participant = participants.find((par) => par.name === user.username);
             if (participant) {
               participant.attend = attendance;
@@ -87,7 +89,6 @@ export const callback = (client: Client) => {
                 name: user.username,
               });
             }
-            reaction.remove(user);
           });
 
           eventMessage.edit(constructEventMessage(title, participants));
