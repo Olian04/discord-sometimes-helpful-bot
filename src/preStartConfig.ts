@@ -19,12 +19,10 @@ const args: {
 if (args.env === 'development') {
   // enable debug output
   console.loglevel = 4;
-
-  // tslint:disable-next-line no-var-requires
-  process.env.BOT_TOKEN = require(path.resolve(__dirname, '..', 'secrets.json')).discord_token;
 }
 
-const discord_token = process.env.BOT_TOKEN;
+// tslint:disable-next-line no-var-requires
+const discord_token = require(path.resolve(__dirname, '..', 'secrets.json')).discord_token;
 
 export {
   args,
