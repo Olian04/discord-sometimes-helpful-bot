@@ -1,7 +1,8 @@
-import { ActivityType, Client, PresenceStatus } from 'discord.js';
+import { Client, Message, PresenceStatus } from 'discord.js';
 import fs from 'fs';
 import path from 'path';
 import { args, discord_token } from './preStartConfig';
+import { isCommand, tokenizeCommand } from './util/commandUtils';
 
 const client = new Client();
 
@@ -25,6 +26,12 @@ client.on('ready', async ()  => {
     game: {
       name: nameMap[args.env],
     },
+  });
+
+  // Log incoming messages
+  client.on('message', (message: Message) => {
+    if (! isCommand(message.content)) { return; }
+    console.log(`[${message.author.username}] ${message.content}`);
   });
 
   commands.forEach((command: { ID: string, callback: (client: Client) => void}) => {
