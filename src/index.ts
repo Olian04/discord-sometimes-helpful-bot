@@ -11,7 +11,7 @@ const commands = fs.readdirSync(path.join(__dirname, 'commands'))
   .map((fileName) => require(path.join(__dirname, 'commands', fileName)));
 
 client.on('ready', async ()  => {
-  console.debug(`Client ready`);
+  console.info(`Client ready`);
 
   const statusMap: { [key: string]: PresenceStatus } = {
     production: 'online',
@@ -35,15 +35,15 @@ client.on('ready', async ()  => {
   });
 
   commands.forEach((command: { ID: string, callback: (client: Client) => void}) => {
-    console.debug(`Registering command: ` + command.ID);
+    console.info(`Registering command: ` + command.ID);
     command.callback(client);
   });
 
 });
 
 client.login(discord_token)
-  .then(() => console.debug(`Login successful`))
+  .then(() => console.info(`Login successful`))
   .catch((err) => {
-    console.debug(`Login failed`);
+    console.error(`Login failed`);
     throw err;
   });
