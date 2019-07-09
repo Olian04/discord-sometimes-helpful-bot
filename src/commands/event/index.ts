@@ -1,6 +1,7 @@
-import { Client, Message } from 'discord.js';
+import { Client, Collection, Message, TextChannel } from 'discord.js';
+import { addEvent, getAllEventInChannel, getAllEvents, getParticipants } from '../../database';
 import { isCommand, tokenizeCommand } from '../../util/commandUtils';
-import { IParticipant, ResponseEmoji } from './consts';
+import { ResponseEmoji } from './consts';
 import { constructEventMessage } from './messageConstructor';
 import { updateHandler } from './updateHandler';
 
@@ -30,6 +31,11 @@ export const callback = (client: Client) => {
         await eventMessage.react(ResponseEmoji.YES);
         await eventMessage.react(ResponseEmoji.NO);
         await eventMessage.react(ResponseEmoji.MAYBE);
+        await addEvent({
+          title,
+          message_id: eventMessage.id,
+          channel_id: eventMessage.channel.id,
+        });
 
         updateHandler({
           eventMessage,
@@ -42,4 +48,30 @@ export const callback = (client: Client) => {
   };
   client.on('message', handleMessage);
   client.on('messageUpdate', (_, newMsg) => handleMessage(newMsg));
+
+  // Resuscitate events from DB
+  const textChannels = client.channels.filter((channel) => channel.type === 'text') as Collection<string, TextChannel>;
+  console.info(`Resuscitating events across ${textChannels.size} channels`);
+  textChannels.forEach(async (channel: TextChannel) => {
+    const events =  await getAllEventInChannel({
+      channel_id: channel.id,
+    });
+
+    if (events.length === 0) {
+      return;
+    }
+    Promise.all(events.map(async (event) =>
+      channel.fetchMessage(event.message_id)
+        .then(async (eventMessage) => {
+          console.debug(`Resuscitated event: ${event.title}`);
+          updateHandler({
+            eventMessage,
+            participants: (await getParticipants({
+              message_id: event.message_id,
+            })).map(({ attendance, username }) => ({ name: username, attend: attendance })),
+            title: event.title,
+          });
+        }),
+    ));
+  });
 };

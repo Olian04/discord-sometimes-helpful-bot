@@ -1,0 +1,5 @@
+INSERT INTO event ( title, message_id, channel_id )
+VALUES ( 'dummy title', 'dummy event_id', 'dummy channel_id' );
+
+INSERT INTO participant ( username, event_id, attendance )
+VALUES ( 'dummy username', 'dummy event_id', 'yes' );
