@@ -16,7 +16,6 @@ const args: {
     return res;
   }, {});
 
-
 if (args.env === 'development') {
   // enable debug output
   console.loglevel = 4;
