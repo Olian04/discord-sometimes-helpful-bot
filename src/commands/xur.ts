@@ -4,7 +4,7 @@ import { isCommand, tokenizeCommand } from '../util/commandUtils';
 
 export const ID = 'xur';
 export const callback = (client: Client) => {
-  client.on('message', async (message) => {
+  const messageHandler = async (message) => {
     if (! isCommand(message.content)) { return; }
 
     const [command, ...args] = tokenizeCommand(message.content);
@@ -39,7 +39,9 @@ Xur is @ ${data.location.region} on ${data.location.world}; ${data.location.desc
       });
 
     message.delete(); // Clean up command
-  });
+  };
+  client.on('message', messageHandler);
+  client.on('messageUpdate', (oldMsg, newMsg) => messageHandler(newMsg));
 };
 
 export interface IMap {
