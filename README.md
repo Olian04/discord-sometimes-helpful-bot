@@ -7,9 +7,15 @@ State that you are planning an event, then ppl may react with thumbs up/down or 
 
 ![](assets/event2.png)
 
+## `!xur`
+
+Retrieves information about the destiny 2 NPC Xur. <br>
+API: https://api.braytech.org/?request=xur&get=history
+
+![](assets/xur.png)
+
 ## Planned features
 
-* When, where & what does Xur bring next. [Using this api](https://api.braytech.org/?request=xur&get=history) and fetching images like [this](https://www.bungie.net/common/destiny2_content/icons/1e6af1d4e6ec8568434b1c8f8604b122.jpg)
 * Ready check: Starting a ready check for a given voice chanel. Will display a checklist for all players in the voice channel. Will check as READY when a player reacts to the comment.
 * Automatic roll assignment based on the reacted emoji. 
 * Help command that shows what the bot can do.
