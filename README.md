@@ -21,7 +21,7 @@ API: https://api.braytech.org/?request=xur&get=history~~
 ### General Features
 
 * Mark text channels as "command only" and delete all messages that does not contain commands.
-* Update events by reacting with a :wrench: to an event. The bot the sends a PM to the user and asks for the new event title. The next message sent to the bot by the user will be the new title.
+* Update events by reacting with a :wrench: to an event. The bot the sends a PM to the user providing a set of operations (reactions); change the title, add a comment, remove event, etc...
 
 ### New Commands
 
