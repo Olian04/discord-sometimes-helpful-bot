@@ -9,8 +9,10 @@ State that you are planning an event, then ppl may react with thumbs up/down or 
 
 ## `!xur`
 
-Retrieves information about the destiny 2 NPC Xur. <br>
-API: https://api.braytech.org/?request=xur&get=history
+TODO: Remove this command, or make sure it uses correct data.
+
+~~Retrieves information about the destiny 2 NPC Xur. <br>
+API: https://api.braytech.org/?request=xur&get=history~~
 
 ![](assets/xur.png)
 
@@ -19,6 +21,7 @@ API: https://api.braytech.org/?request=xur&get=history
 ### General Features
 
 * Mark text channels as "command only" and delete all messages that does not contain commands.
+* Update events by reacting with a :wrench: to an event. The bot the sends a PM to the user and asks for the new event title. The next message sent to the bot by the user will be the new title.
 
 ### New Commands
 
