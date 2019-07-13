@@ -22,9 +22,13 @@ if (args.env === 'development') {
 }
 
 // tslint:disable-next-line no-var-requires
-const discord_token = require(path.resolve(__dirname, '..', 'secrets.json')).discord_token;
+const secrets = require(path.resolve(__dirname, '..', 'secrets.json'));
+
+const discord_token = secrets.discord_token;
+const firebase_config =  secrets.firebaseConfig;
 
 export {
   args,
   discord_token,
+  firebase_config,
 };

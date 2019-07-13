@@ -1,97 +1,89 @@
-import path from 'path';
-import { Database, verbose } from 'sqlite3';
+import * as firebase from 'firebase-admin';
+import { firebase_config } from './preStartConfig';
 
-const Sqlite3 = verbose();
-const db = new Sqlite3.Database(path.join(__dirname, '..', 'database.db'));
-
-/**
- * Internal helper function for creating & executing prepared statements in a promise like way
- * @param {string} statement - An SQL statement with question marks representing dynamic values
- * @param {any[]} values - An array of values to inject into the SQL statement in place of the questions marks
- */
-const prepared = <IRow>(statement: string, values: any[]) => new Promise<IRow[]>((resolve, reject) => {
-  db.serialize(() => {
-    try {
-      const stmt = db.prepare(statement, ...values, (_, err) => {
-        if (err) {
-          console.warn(err);
-          reject(err);
-          return;
-        }
-      });
-      stmt.run((err) => {
-        if (err) {
-          console.warn(err);
-          reject(err);
-          return;
-        }
-      });
-      stmt.all((err, rows: IRow[]) => {
-        if (err) {
-          resolve([]);
-        } else {
-          resolve(rows);
-        }
-      });
-      stmt.finalize((err) => {
-        if (err) {
-          console.warn(err);
-          reject(err);
-          return;
-        }
-      });
-    } catch (err) {
-      console.warn(err);
-      reject(err);
-    }
-  });
+const app = firebase.initializeApp({
+  credential: firebase.credential.cert(firebase_config),
+  databaseURL: 'https://sometimes-helpful.firebaseio.com',
 });
 
-export const addEvent = async (args: { message_id: string, channel_id: string, title: string; }) => prepared(
-  'INSERT INTO event ( title, message_id, channel_id ) VALUES ( ?, ?, ? )',
-  [ args.title, args.message_id, args.channel_id ],
-);
+const db = app.firestore();
 
-export const getEvent = async (args: { message_id: string, channel_id: string }) =>
-  prepared<{ message_id: string, title: string }>(
-    'SELECT * FROM event WHERE message_id = ? AND channel_id = ?',
-    [ args.message_id, args.channel_id ],
-  ).then((events) => {
-    if (events.length === 0) {
-      throw new Error(`Unable to find event with message_id = ${args.message_id}`);
-    }
-    return events[0];
+export const addEvent = async (args: { message_id: string, channel_id: string, title: string; }) => db
+  .collection('events')
+  .add({
+    message_id: args.message_id,
+    channel_id: args.channel_id,
+    title: args.title,
   });
 
-export const getAllEventInChannel = async (args: { channel_id: string }) =>
-  prepared<{ message_id: string, channel_id: string, title: string }>(
-    'SELECT * FROM event WHERE channel_id = ?',
-    [ args.channel_id ],
-  );
+export const getEvent = async (args: { message_id: string, channel_id: string }) => db
+  .collection('events')
+  .where('message_id', '==', args.message_id)
+  .where('channel_id', '==', args.channel_id)
+  .get().then((snapshot) => {
+    if (snapshot.size === 0) {
+      throw new Error(`Unable to find event with message_id = ${args.message_id} & channel_id = ${args.channel_id}`);
+    }
+    return snapshot.docs[0].data() as {
+      message_id: string;
+      channel_id: string;
+      title: string;
+    };
+});
 
-export const getAllEvents = async () =>
-  prepared<{ message_id: string, channel_id: string, title: string }>('SELECT * FROM event', []);
+export const getAllEventInChannel = async (args: { channel_id: string }) => db
+  .collection('events')
+  .where('channel_id', '==', args.channel_id)
+  .get().then((snapshot) => {
+    if (snapshot.size === 0) {
+      return [];
+    }
+    return snapshot.docs.map((v) => v.data() as {
+      message_id: string;
+      channel_id: string;
+      title: string;
+    });
+  });
+
+export const getAllEvents = async () => db
+  .collection('events')
+  .get().then((snapshot) =>
+    snapshot.docs.map((v) => v.data() as {
+      message_id: string;
+      channel_id: string;
+      title: string;
+    }),
+  );
 
 export const addParticipant = async (args: {
     event_id: string, username: string, attendance: 'yes' | 'no' | 'maybe',
-  }) => prepared(
-    'INSERT INTO participant ( username, event_id, attendance ) VALUES ( ?, ?, ? )',
-    [ args.username, args.event_id, args.attendance],
-  );
+  }) => db.collection('participants').add({
+    attendance: args.attendance,
+    username: args.username,
+    event_id: args.event_id,
+  });
 
 export const updateAttendance = async (args: {
   newAttendance: 'yes' | 'no' | 'maybe', event_id: string, username: string,
-}) => prepared(
-  'UPDATE participant SET attendance = ? WHERE event_id = ? AND username =  ?',
-  [ args.newAttendance, args.event_id, args.username ],
-);
+}) => {
+  const docID = await db.collection('participants')
+    .where('event_id', '==', args.event_id)
+    .where('username', '==', args.username)
+    .limit(1).get().then((snapshot) => snapshot.docs[0].id);
 
-export const getParticipants = async (args: { message_id: string }) =>
-  prepared<{event_id: string, username: string, attendance: 'yes' | 'no' | 'maybe'}>(
-    'SELECT * FROM participant WHERE event_id = ?',
-    [ args.message_id ],
+  return db.collection('participants').doc(docID).set({
+    attendance: args.newAttendance,
+    username: args.username,
+    event_id: args.event_id,
+  });
+};
+
+export const getParticipants = async (args: { message_id: string }) => db
+  .collection('participants')
+  .get().then((snapshot) =>
+    snapshot.docs.map((v) => v.data() as {
+      attendance: 'yes' | 'no' | 'maybe';
+      username: string;
+      event_id: string;
+    }),
   );
-
-process.on('beforeExit', () => {
-  db.close();
-});
