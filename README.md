@@ -24,12 +24,12 @@ API: https://api.braytech.org/?request=xur&get=history
 
 * [nodejs](https://nodejs.org)
 * [npm (included in newer versions of nodejs)](https://github.com/npm/cli/releases/tag/v6.10.0)
-* [sqlite](https://www.sqlite.org)
+* [firebase account](https://firebase.google.com/)
 
 ## Install & Run
 
 1. Make sure you have installed all prerequisite software
-2. Initialize database: `npm run db:init`
+2. Grab your firebase [service account](https://firebase.google.com/docs/admin/setup) credentials.
 3. Grab your discord-bot secret from the [discord developer portal](https://discordapp.com/developers/applications)
-4. Create a `secrets.json` file and store your discord-bot secret as `discord_token` inside it.
+4. Create a `secrets.json` file and store your discord-bot secret as `discord_token` inside it, and store the firebase service account credentials as `firebaseConfig`.
 5. Start the bot: `npm run start:prod`
