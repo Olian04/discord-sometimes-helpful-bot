@@ -80,7 +80,7 @@ export const updateAttendance = async (args: {
 
 export const getParticipants = async (args: { message_id: string }) => db
   .collection('participants')
-  .where('message_id', '==', args.message_id)
+  .where('event_id', '==', args.message_id)
   .get().then((snapshot) =>
     snapshot.docs.map((v) => v.data() as {
       attendance: 'yes' | 'no' | 'maybe';
