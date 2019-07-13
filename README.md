@@ -16,6 +16,12 @@ API: https://api.braytech.org/?request=xur&get=history
 
 ## Planned features
 
+### General Features
+
+* Mark text channels as "command only" and delete all messages that does not contain commands.
+
+### New Commands
+
 * Ready check: Starting a ready check for a given voice chanel. Will display a checklist for all players in the voice channel. Will check as READY when a player reacts to the comment.
 * Automatic roll assignment based on the reacted emoji. 
 * Help command that shows what the bot can do.
