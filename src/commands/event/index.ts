@@ -71,6 +71,10 @@ export const callback = (client: Client) => {
             })).map(({ attendance, username }) => ({ name: username, attend: attendance })),
             title: event.title,
           });
+        })
+        .catch((err) => {
+          // TODO: Remove none existent messages from DB.
+          console.warn('Attempted to resuscitate a none existent message.');
         }),
     ));
   });
