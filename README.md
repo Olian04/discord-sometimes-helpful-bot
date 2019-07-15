@@ -9,12 +9,21 @@ State that you are planning an event, then ppl may react with thumbs up/down or 
 
 ## `!xur`
 
-Retrieves information about the destiny 2 NPC Xur. <br>
-API: https://api.braytech.org/?request=xur&get=history
+TODO: Remove this command, or make sure it uses correct data.
+
+~~Retrieves information about the destiny 2 NPC Xur. <br>
+API: https://api.braytech.org/?request=xur&get=history~~
 
 ![](assets/xur.png)
 
 ## Planned features
+
+### General Features
+
+* Mark text channels as "command only" and delete all messages that does not contain commands.
+* Update events by reacting with a :wrench: to an event. The bot the sends a PM to the user providing a set of operations (reactions); change the title, add a comment, remove event, etc...
+
+### New Commands
 
 * Ready check: Starting a ready check for a given voice chanel. Will display a checklist for all players in the voice channel. Will check as READY when a player reacts to the comment.
 * Automatic roll assignment based on the reacted emoji. 
