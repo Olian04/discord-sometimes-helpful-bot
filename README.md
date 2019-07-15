@@ -7,15 +7,6 @@ State that you are planning an event, then ppl may react with thumbs up/down or 
 
 ![](assets/event2.png)
 
-## `!xur`
-
-TODO: Remove this command, or make sure it uses correct data.
-
-~~Retrieves information about the destiny 2 NPC Xur. <br>
-API: https://api.braytech.org/?request=xur&get=history~~
-
-![](assets/xur.png)
-
 ## Planned features
 
 ### General Features
@@ -26,8 +17,9 @@ API: https://api.braytech.org/?request=xur&get=history~~
 ### New Commands
 
 * Ready check: Starting a ready check for a given voice chanel. Will display a checklist for all players in the voice channel. Will check as READY when a player reacts to the comment.
-* Automatic roll assignment based on the reacted emoji. 
+* Automatic roll assignment based on the reacted emoji.
 * Help command that shows what the bot can do.
+* Xur: Retrieves information about the destiny 2 NPC Xur.
 
 ## Prerequisite
 
