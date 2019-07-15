@@ -9,6 +9,7 @@ export enum ResponseEmoji {
   YES = '👍',
   NO = '👎',
   MAYBE = '❔',
+  EDIT_TITLE =  '🔧', // TODO: Implement this (see readme for more info)
 }
 
 export interface IUpdateHandlerArguments {
