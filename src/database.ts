@@ -43,6 +43,17 @@ export const deleteEventParticipants = async (args: { message_id: string }) => d
     });
   });
 
+export const updateEventTitle = async (args: {
+  newTitle: string, message_id: string, channel_id: string,
+}) => db.collection('events')
+  .where('message_id', '==', args.message_id)
+  .where('channel_id', '==', args.channel_id)
+  .limit(1).get().then((snapshot) => {
+    snapshot.docs[0].ref.update({
+      title: args.newTitle,
+    });
+  });
+
 export const getEvent = async (args: { message_id: string, channel_id: string }) => db
   .collection('events')
   .where('message_id', '==', args.message_id)

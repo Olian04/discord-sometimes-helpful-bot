@@ -1,5 +1,6 @@
 import { addParticipant, updateAttendance } from '../../database';
 import { IUpdateHandlerArguments, ResponseEmoji } from './consts';
+import { editHandler } from './editHandler';
 import { constructEventMessage } from './messageConstructor';
 import { filter } from './util';
 
@@ -10,6 +11,14 @@ export const updateHandler = ({ eventMessage, participants, title }: IUpdateHand
   const collector = eventMessage.createReactionCollector(filter);
   collector.on('collect', (reaction) => {
     console.debug('got a reaction', reaction.emoji.name);
+
+    if (reaction.emoji.name === ResponseEmoji.EDIT_TITLE) {
+      // Start sequence: Edit title
+      editHandler({
+        eventMessage, participants, title, reaction,
+      });
+      return;
+    }
 
     const attendance = reaction.emoji.name === ResponseEmoji.YES ? 'yes'
       : reaction.emoji.name === ResponseEmoji.NO ? 'no' : 'maybe';
@@ -30,6 +39,7 @@ export const updateHandler = ({ eventMessage, participants, title }: IUpdateHand
         participants.push({
           attend: attendance,
           name: user.username,
+          timestamp: Date.now(),
         });
         addParticipant({
           event_id: eventMessage.id,

@@ -3,7 +3,8 @@ A discord chat bot that provides tools for organizing and managing raiding.
 
 ## `!event [title]`
 
-State that you are planning an event, then ppl may react with thumbs up/down or questionmark depending on if they plan to attend or not. The event comment will update with a list of the ppl who have responded & in the order they responded.
+State that you are planning an event, then ppl may react with :thumbsup: / :thumbsdown: or :grey_question: depending on if they plan to attend or not. The event comment will update with a list of the ppl who have responded & in the order they responded.
+Reacting with a :wrench: will alow you to change the title of the event. The bot the sends a DM to the user providing further instructions.
 
 ![](assets/event2.png)
 
@@ -12,7 +13,6 @@ State that you are planning an event, then ppl may react with thumbs up/down or 
 ### General Features
 
 * Mark text channels as "command only" and delete all messages that does not contain commands.
-* Update events by reacting with a :wrench: to an event. The bot the sends a PM to the user providing a set of operations (reactions); change the title, add a comment, remove event, etc...
 
 ### New Commands
 
