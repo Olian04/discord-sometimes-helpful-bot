@@ -4,7 +4,6 @@ import { constructEventMessage } from './messageConstructor';
 import { filter } from './util';
 
 export const updateHandler = ({ eventMessage, participants, title }: IUpdateHandlerArguments) => {
-
   // Update message to reflect DB
   eventMessage.edit(constructEventMessage(title, participants));
 

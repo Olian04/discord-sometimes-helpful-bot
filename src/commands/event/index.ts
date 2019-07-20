@@ -1,5 +1,5 @@
 import { Client, Collection, Message, TextChannel } from 'discord.js';
-import { addEvent, getAllEventInChannel, getAllEvents, getParticipants } from '../../database';
+import { addEvent, getAllEventInChannel, getParticipants, purgeEvent } from '../../database';
 import { isCommand, tokenizeCommand } from '../../util/commandUtils';
 import { ResponseEmoji } from './consts';
 import { constructEventMessage } from './messageConstructor';
@@ -73,7 +73,12 @@ export const callback = (client: Client) => {
           });
         })
         .catch((err) => {
-          // TODO: Remove none existent messages from DB.
+          // TODO: Purge event on msg deleted as well
+          // Remove none existent messages from DB.
+          purgeEvent({
+            channel_id: event.channel_id,
+            message_id: event.message_id,
+          });
           console.warn('Attempted to resuscitate a none existent message.');
         }),
     ));

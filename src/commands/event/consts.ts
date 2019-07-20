@@ -3,6 +3,7 @@ import { Message } from 'discord.js';
 export interface IParticipant {
   attend: 'yes' | 'no' | 'maybe';
   name: string;
+  timestamp?: number;
 }
 
 export enum ResponseEmoji {

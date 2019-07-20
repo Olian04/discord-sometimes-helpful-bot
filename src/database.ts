@@ -16,6 +16,33 @@ export const addEvent = async (args: { message_id: string, channel_id: string, t
     title: args.title,
   });
 
+export const purgeEvent = async (args: { message_id: string, channel_id: string }) => Promise.all([
+  deleteEvent({
+    channel_id: args.channel_id,
+    message_id: args.message_id,
+  }),
+  deleteEventParticipants({
+    message_id: args.message_id,
+  }),
+]);
+
+export const deleteEvent = async (args: { message_id: string, channel_id: string }) => db
+  .collection('events')
+  .where('message_id', '==', args.message_id)
+  .where('channel_id', '==', args.channel_id)
+  .get().then((snapshot) => {
+    snapshot.docs[0].ref.delete();
+  });
+
+export const deleteEventParticipants = async (args: { message_id: string }) => db
+  .collection('participants')
+  .where('event_id', '==', args.message_id)
+  .get().then((snapshot) => {
+    snapshot.forEach((doc) => {
+      doc.ref.delete();
+    });
+  });
+
 export const getEvent = async (args: { message_id: string, channel_id: string }) => db
   .collection('events')
   .where('message_id', '==', args.message_id)
@@ -61,6 +88,7 @@ export const addParticipant = async (args: {
     attendance: args.attendance,
     username: args.username,
     event_id: args.event_id,
+    timestamp: Date.now(),
   });
 
 export const updateAttendance = async (args: {
@@ -75,6 +103,7 @@ export const updateAttendance = async (args: {
     attendance: args.newAttendance,
     username: args.username,
     event_id: args.event_id,
+    timestamp: Date.now(),
   });
 };
 
@@ -86,5 +115,6 @@ export const getParticipants = async (args: { message_id: string }) => db
       attendance: 'yes' | 'no' | 'maybe';
       username: string;
       event_id: string;
+      timestamp: number;
     }),
   );
