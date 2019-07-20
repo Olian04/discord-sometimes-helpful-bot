@@ -28,28 +28,16 @@ client.on('ready', async ()  => {
     },
   });
 
-  const allRegisteredCommands = [];
   commands.forEach((command: { ID: string, commands: string[], callback: (client: Client) => void}) => {
     console.info(`Registering command: ` + command.ID);
-    allRegisteredCommands.push(...command.commands);
     command.callback(client);
   });
 
   client.on('message', async (message: Message) => {
     if (! isCommand(message.content)) { return; }
 
-    const [command] = tokenizeCommand(message.content);
-
-    if (allRegisteredCommands.some((v) => v === command)) {
-      // Log incoming command
-      console.log(`[${message.author.username}] ${message.content}`);
-    } else {
-      console.debug(`(Unknown command) [${message.author.username}] ${message.content}`);
-      await message.author.send(
-        `Unknown command "${command}"`,
-      );
-      message.delete();
-    }
+    // Log incoming command
+    console.log(`[${message.author.username}] ${message.content}`);
   });
 });
 

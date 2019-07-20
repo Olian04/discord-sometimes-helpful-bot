@@ -5,7 +5,6 @@ import { isCommand } from '../util/commandUtils';
 const eventSignChannelID = '597864917441183754';
 const channels = [ eventSignChannelID ].reduce((res, v) => ({...res, [v]: v}), {});
 
-export const commands = [];
 export const ID = 'command-only-channels';
 export const callback = (client: Client) => {
   const messageHandler = async (message: Message) => {
