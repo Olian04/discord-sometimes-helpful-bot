@@ -12,7 +12,7 @@
     "lint": "tslint --fix -c ./tslint.json 'src/**/*{.ts,.tsx}'",
     "lint:nofix": "tslint -c ./tslint.json 'src/**/*{.ts,.tsx}'",
     "prestart:prod": "npm run build",
-    "prestart:dev": "npm run build",
+    "prestart:dev": "npm run lint && npm run build",
     "prebuild": "npm run lint:nofix && npm run test",
     "db:init": "sqlite3 database.db < scripts/init_db.sqlite",
     "db:dummy_data": "sqlite3 database.db < scripts/insert_dummy_data.sqlite"
