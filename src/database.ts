@@ -104,19 +104,13 @@ export const addParticipant = async (args: {
 
 export const updateAttendance = async (args: {
   newAttendance: 'yes' | 'no' | 'maybe', event_id: string, username: string,
-}) => {
-  const docID = await db.collection('participants')
-    .where('event_id', '==', args.event_id)
-    .where('username', '==', args.username)
-    .limit(1).get().then((snapshot) => snapshot.docs[0].id);
-
-  return db.collection('participants').doc(docID).set({
+}) => db.collection('participants')
+  .where('event_id', '==', args.event_id)
+  .where('username', '==', args.username)
+  .limit(1).get().then((snapshot) => snapshot.docs[0].ref.update({
     attendance: args.newAttendance,
-    username: args.username,
-    event_id: args.event_id,
     timestamp: Date.now(),
-  });
-};
+  }));
 
 export const getParticipants = async (args: { message_id: string }) => db
   .collection('participants')
