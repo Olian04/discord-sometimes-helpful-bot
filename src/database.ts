@@ -8,15 +8,18 @@ const app = firebase.initializeApp({
 
 const db = app.firestore();
 
-export const addEvent = async (args: { message_id: string, channel_id: string, title: string; }) => db
-  .collection('events')
+export const addEvent = async (args: {
+  message_id: string, channel_id: string, title: string,
+}) => db.collection('events')
   .add({
     message_id: args.message_id,
     channel_id: args.channel_id,
     title: args.title,
   });
 
-export const purgeEvent = async (args: { message_id: string, channel_id: string }) => Promise.all([
+export const purgeEvent = async (args: {
+  message_id: string, channel_id: string,
+}) => Promise.all([
   deleteEvent({
     channel_id: args.channel_id,
     message_id: args.message_id,
@@ -26,16 +29,17 @@ export const purgeEvent = async (args: { message_id: string, channel_id: string 
   }),
 ]);
 
-export const deleteEvent = async (args: { message_id: string, channel_id: string }) => db
-  .collection('events')
+export const deleteEvent = async (args: {
+  message_id: string, channel_id: string,
+}) => db.collection('events')
   .where('message_id', '==', args.message_id)
   .where('channel_id', '==', args.channel_id)
-  .get().then((snapshot) => {
-    snapshot.docs[0].ref.delete();
-  });
+  .get().then((snapshot) => snapshot.docs[0].ref)
+  .then((ref) => ref.delete());
 
-export const deleteEventParticipants = async (args: { message_id: string }) => db
-  .collection('participants')
+export const deleteEventParticipants = async (args: {
+  message_id: string,
+}) => db.collection('participants')
   .where('event_id', '==', args.message_id)
   .get().then((snapshot) => {
     snapshot.forEach((doc) => {
@@ -48,29 +52,14 @@ export const updateEventTitle = async (args: {
 }) => db.collection('events')
   .where('message_id', '==', args.message_id)
   .where('channel_id', '==', args.channel_id)
-  .limit(1).get().then((snapshot) => {
-    snapshot.docs[0].ref.update({
-      title: args.newTitle,
-    });
-  });
+  .limit(1).get().then((snapshot) => snapshot.docs[0].ref)
+  .then((ref) => ref.update({
+    title: args.newTitle,
+  }));
 
-export const getEvent = async (args: { message_id: string, channel_id: string }) => db
-  .collection('events')
-  .where('message_id', '==', args.message_id)
-  .where('channel_id', '==', args.channel_id)
-  .get().then((snapshot) => {
-    if (snapshot.size === 0) {
-      throw new Error(`Unable to find event with message_id = ${args.message_id} & channel_id = ${args.channel_id}`);
-    }
-    return snapshot.docs[0].data() as {
-      message_id: string;
-      channel_id: string;
-      title: string;
-    };
-});
-
-export const getAllEventInChannel = async (args: { channel_id: string }) => db
-  .collection('events')
+export const getAllEventInChannel = async (args: {
+  channel_id: string,
+}) => db.collection('events')
   .where('channel_id', '==', args.channel_id)
   .get().then((snapshot) => {
     if (snapshot.size === 0) {
@@ -82,16 +71,6 @@ export const getAllEventInChannel = async (args: { channel_id: string }) => db
       title: string;
     });
   });
-
-export const getAllEvents = async () => db
-  .collection('events')
-  .get().then((snapshot) =>
-    snapshot.docs.map((v) => v.data() as {
-      message_id: string;
-      channel_id: string;
-      title: string;
-    }),
-  );
 
 export const addParticipant = async (args: {
     event_id: string, username: string, attendance: 'yes' | 'no' | 'maybe',
@@ -107,13 +86,15 @@ export const updateAttendance = async (args: {
 }) => db.collection('participants')
   .where('event_id', '==', args.event_id)
   .where('username', '==', args.username)
-  .limit(1).get().then((snapshot) => snapshot.docs[0].ref.update({
+  .limit(1).get().then((snapshot) => snapshot.docs[0].ref)
+  .then((ref) => ref.update({
     attendance: args.newAttendance,
     timestamp: Date.now(),
   }));
 
-export const getParticipants = async (args: { message_id: string }) => db
-  .collection('participants')
+export const getParticipants = async (args: {
+  message_id: string,
+}) => db.collection('participants')
   .where('event_id', '==', args.message_id)
   .get().then((snapshot) =>
     snapshot.docs.map((v) => v.data() as {
