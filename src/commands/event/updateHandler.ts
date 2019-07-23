@@ -30,6 +30,7 @@ export const updateHandler = ({ eventMessage, participants, title }: IUpdateHand
       const participant = participants.find((par) => par.name === user.username);
       if (participant) {
         participant.attend = attendance;
+        participant.timestamp = Date.now();
         updateAttendance({
           newAttendance: attendance,
           event_id: eventMessage.id,
