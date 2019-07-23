@@ -10,6 +10,10 @@ Reacting with a :wrench: will alow you to change the title of the event. The bot
 
 ## Planned features
 
+### Improvements on old features
+
+* Resuscitation of events should handle reactions made while the bot was offline
+
 ### General Features
 
 * Mark text channels as "command only" and delete all messages that does not contain commands.
