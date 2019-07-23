@@ -3,17 +3,17 @@ import { IParticipant, ResponseEmoji } from './consts';
 export const constructEventMessage = (title: string, participants: IParticipant[]) => {
   const participants_yes = participants
     .filter(({ attend }) => attend === 'yes')
-    .sort((a, b) => a.timestamp - b.timestamp)
+    .sort((a, b) => b.timestamp - a.timestamp)
     .map((participant) => `+ ${participant.name}`);
 
   const participants_no = participants
     .filter(({ attend }) => attend === 'no')
-    .sort((a, b) => a.timestamp - b.timestamp)
+    .sort((a, b) => b.timestamp - a.timestamp)
     .map((participant) => `- ${participant.name}`);
 
   const participants_maybe = participants
     .filter(({ attend }) => attend === 'maybe')
-    .sort((a, b) => a.timestamp - b.timestamp)
+    .sort((a, b) => b.timestamp - a.timestamp)
     .map((participant) => `? ${participant.name}`);
 
   const display_participants = [
