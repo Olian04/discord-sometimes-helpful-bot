@@ -68,7 +68,9 @@ export const callback = (client: Client) => {
             eventMessage,
             participants: (await getParticipants({
               message_id: event.message_id,
-            })).map(({ attendance, username, timestamp }) => ({ name: username, attend: attendance, timestamp: timestamp })),
+            })).map(({ attendance, username, timestamp }) => 
+              ({ name: username, attend: attendance, timestamp })
+            ),
             title: event.title,
           });
         })
