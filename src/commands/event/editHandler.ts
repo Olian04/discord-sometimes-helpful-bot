@@ -5,7 +5,7 @@ import { IUpdateHandlerArguments } from './consts';
 import { constructEventMessage } from './messageConstructor';
 
 type editHandlerArguments = IUpdateHandlerArguments & { reaction: MessageReaction };
-export const editHandler = ({ eventMessage, participants, title, reaction }: editHandlerArguments) => {
+export const editHandler = ({ eventMessage, participants, title, reaction }: editHandlerArguments, onChangeCB: Function) => {
   reaction.users.forEach(async (user) => {
     reaction.remove(user); // Remove reaction
 
@@ -33,6 +33,7 @@ Ex: \`!title This is the new title!\`
       const [command, ...args] = tokenizeCommand(response.content);
       if (command === 'title') {
         const newTitle = args.join(' ');
+        onChangeCB(newTitle);
         updateEventTitle({
           newTitle,
           message_id: eventMessage.id,
