@@ -7,7 +7,7 @@ import { constructEventMessage } from './messageConstructor';
 type editHandlerArguments = IUpdateHandlerArguments & { reaction: MessageReaction };
 export const editHandler = ({ 
     eventMessage, participants, title, reaction 
-  }: editHandlerArguments, onChangeCB: () => void) => {
+  }: editHandlerArguments, onChangeCB: (newTitle: string) => void) => {
   reaction.users.forEach(async (user) => {
     reaction.remove(user); // Remove reaction
 
