@@ -14,7 +14,7 @@ export const updateHandler = ({ eventMessage, participants, title }: IUpdateHand
 
     if (reaction.emoji.name === ResponseEmoji.EDIT_TITLE) {
       // Start sequence: Edit title
-      editHandler({
+      title = editHandler({
         eventMessage, participants, title, reaction,
       });
       return;
