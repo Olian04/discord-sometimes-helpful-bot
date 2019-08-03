@@ -5,7 +5,9 @@ import { IUpdateHandlerArguments } from './consts';
 import { constructEventMessage } from './messageConstructor';
 
 type editHandlerArguments = IUpdateHandlerArguments & { reaction: MessageReaction };
-export const editHandler = ({ eventMessage, participants, title, reaction }: editHandlerArguments, onChangeCB: Function) => {
+export const editHandler = ({ 
+    eventMessage, participants, title, reaction 
+  }: editHandlerArguments, onChangeCB: () => void) => {
   reaction.users.forEach(async (user) => {
     reaction.remove(user); // Remove reaction
 
