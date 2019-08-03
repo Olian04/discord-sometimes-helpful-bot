@@ -16,7 +16,7 @@ export const updateHandler = ({ eventMessage, participants, title }: IUpdateHand
       // Start sequence: Edit title
       editHandler({
         eventMessage, participants, title, reaction,
-      }, newTitle => {
+      }, (newTitle) => {
         title = newTitle;
       });
       return;
