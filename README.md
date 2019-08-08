@@ -20,6 +20,7 @@ Reacting with a :wrench: will alow you to change the title of the event. The bot
 
 ### New Commands
 
+* Emoji into image. Since emoji are really small on discord, a command that turns emoji into larger versions of them selfs (as long as the bot has them stored locally).
 * Ready check: Starting a ready check for a given voice chanel. Will display a checklist for all players in the voice channel. Will check as READY when a player reacts to the comment.
 * Automatic roll assignment based on the reacted emoji.
 * Help command that shows what the bot can do.
