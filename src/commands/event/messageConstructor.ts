@@ -1,4 +1,5 @@
-import { IParticipant, ResponseEmoji } from './consts';
+import { emoji } from 'node-emoji';
+import { IParticipant } from './consts';
 
 export const constructEventMessage = (title: string, participants: IParticipant[]) => {
   const participants_yes = participants
@@ -29,7 +30,7 @@ Participants:
 \`\`\`diff
 ${display_participants.join('\n')}
 \`\`\`` +
-`React with ${ResponseEmoji.YES} if you can attend, ` +
-`${ResponseEmoji.NO} if you can't attend, ` +
-`${ResponseEmoji.MAYBE} if you're unsure.`;
+`React with ${emoji.thumbsup} if you can attend, ` +
+`${emoji.thumbsdown} if you can't attend, ` +
+`${emoji.grey_question} if you're unsure.`;
 };

@@ -1,4 +1,4 @@
-import { Message } from 'discord.js';
+import { Message, MessageReaction } from 'discord.js';
 
 export interface IParticipant {
   attend: 'yes' | 'no' | 'maybe';
@@ -6,15 +6,9 @@ export interface IParticipant {
   timestamp?: number;
 }
 
-export enum ResponseEmoji {
-  YES = '👍',
-  NO = '👎',
-  MAYBE = '❔',
-  EDIT_TITLE =  '🔧', // TODO: Implement this (see readme for more info)
-}
-
-export interface IUpdateHandlerArguments {
-  participants: IParticipant[];
+export interface IEditHandlerArguments {
   title: string;
+  participants: IParticipant[];
   eventMessage: Message;
+  reaction: MessageReaction;
 }

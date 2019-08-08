@@ -1,13 +1,11 @@
 import { Client, Collection, Message, TextChannel } from 'discord.js';
 import { addEvent, getAllEventInChannel, getParticipants, purgeEvent } from '../../database';
 import { isCommand, tokenizeCommand } from '../../util/commandUtils';
-import { ResponseEmoji } from './consts';
-import { constructEventMessage } from './messageConstructor';
-import { updateHandler } from './updateHandler';
+import { EventMessage } from './EventMessage';
 
 export const ID = 'event';
 export const callback = (client: Client) => {
-  const handleMessage = (message) => {
+  const handleMessage = async (message) => {
     if (! isCommand(message.content)) { return; }
 
     const [command, ...args] = tokenizeCommand(message.content);
@@ -25,24 +23,12 @@ export const callback = (client: Client) => {
 
     const title = args.join(' ');
 
-    message.channel
-      .send(constructEventMessage(title, []))
-      .then(async (eventMessage: Message) => {
-        await eventMessage.react(ResponseEmoji.YES);
-        await eventMessage.react(ResponseEmoji.NO);
-        await eventMessage.react(ResponseEmoji.MAYBE);
-        await addEvent({
-          title,
-          message_id: eventMessage.id,
-          channel_id: eventMessage.channel.id,
-        });
-
-        updateHandler({
-          eventMessage,
-          title,
-          participants: [],
-        });
-      });
+    const DynamicEventMessage = await (new EventMessage(title, []).sendTo(message.channel));
+    addEvent({
+      title,
+      message_id: DynamicEventMessage.message.id,
+      channel_id: DynamicEventMessage.message.channel.id,
+    });
 
     message.delete(); // delete command from chat log
   };
@@ -64,14 +50,15 @@ export const callback = (client: Client) => {
       channel.fetchMessage(event.message_id)
         .then(async (eventMessage) => {
           console.debug(`Resuscitated event: ${event.title}`);
-          updateHandler({
-            eventMessage,
-            participants: (await getParticipants({
-              message_id: event.message_id,
-            })).map(({ attendance, username, timestamp }) =>
-              ({ name: username, attend: attendance, timestamp })),
-            title: event.title,
-          });
+
+          const participants =  (await getParticipants({
+            message_id: event.message_id,
+          })).map(({ attendance, username, timestamp }) => ({
+            name: username, attend: attendance, timestamp,
+          }));
+          const dynamicEventMessage = new EventMessage(event.title, participants);
+          dynamicEventMessage.message = eventMessage;
+
         })
         .catch((err) => {
           // TODO: Purge event on msg deleted as well

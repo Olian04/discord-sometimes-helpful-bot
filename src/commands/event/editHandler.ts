@@ -1,16 +1,13 @@
-import { Message, MessageReaction, RichEmbed } from 'discord.js';
+import { Message, RichEmbed } from 'discord.js';
 import { updateEventTitle } from '../../database';
 import { isCommand, tokenizeCommand } from '../../util/commandUtils';
-import { IUpdateHandlerArguments } from './consts';
+import { IEditHandlerArguments } from './consts';
 import { constructEventMessage } from './messageConstructor';
 
-type editHandlerArguments = IUpdateHandlerArguments & { reaction: MessageReaction };
 export const editHandler = ({
     eventMessage, participants, title, reaction,
-  }: editHandlerArguments,  onChangeCB: (newTitle: string) => void) => {
+  }: IEditHandlerArguments, onChangeCB: (newTitle: string) => void) => {
   reaction.users.forEach(async (user) => {
-    reaction.remove(user); // Remove reaction
-
     // Send instructions
     const dm = await user.send(`You are attempting to change the title of an event.
 The current title is:
