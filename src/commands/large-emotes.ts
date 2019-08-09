@@ -18,8 +18,12 @@ export const callback = (client: Client) => {
     if (args.length < 1) { return; }
 
     let [requestedEmote] = args;
-    if (requestedEmote.match(/^:.*:$/i)) {
+    if (requestedEmote.match(/^:.+:$/i)) {
+      // Unresolved emotes looks like this :some_name:
       requestedEmote = requestedEmote.substring(1, requestedEmote.length - 1);
+    } else if (requestedEmote.match(/^<:.+:\d+>$/i)) {
+      // Resolved emotes looks like this <:emote_name:some_numerical_id>
+      requestedEmote = requestedEmote.substring(1, requestedEmote.lastIndexOf(':'));
     }
 
     if (! emoteNames.some((name) => name === requestedEmote)) {
