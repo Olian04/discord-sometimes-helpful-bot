@@ -34,7 +34,7 @@ Available emotes are: ${emoteNames.join(', ')}`);
       return;
     }
 
-    await message.channel.send('', {
+    await message.channel.send(`${message.author}`, {
       files: [
         path.join(__dirname, '..', '..', 'assets', 'emotes', `${requestedEmote}.png`),
       ],
