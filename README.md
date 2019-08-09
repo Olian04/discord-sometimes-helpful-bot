@@ -8,6 +8,10 @@ Reacting with a :wrench: will alow you to change the title of the event. The bot
 
 ![](assets/event2.png)
 
+## `!emote [emoteName]`
+
+Since emoji are really small on discord, this command will turn emotes into larger versions of them selfs (as long as the bot has them stored locally). In other words, if you have an emote called `:uldren_nooo:` on your discord server, and you have an associated image with the name `unldren_nooo.png` in the folder `assets/emotes` on the server with your bot; then the command `!emote :uldren_nooo:` or `!emote uldren_nooo` will post a large version of the emote.
+
 ## Planned features
 
 ### Improvements on old features
@@ -20,7 +24,6 @@ Reacting with a :wrench: will alow you to change the title of the event. The bot
 
 ### New Commands
 
-* Emoji into image. Since emoji are really small on discord, a command that turns emoji into larger versions of them selfs (as long as the bot has them stored locally).
 * Ready check: Starting a ready check for a given voice chanel. Will display a checklist for all players in the voice channel. Will check as READY when a player reacts to the comment.
 * Automatic roll assignment based on the reacted emoji.
 * Help command that shows what the bot can do.
