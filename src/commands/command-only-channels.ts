@@ -1,9 +1,6 @@
 import { Client, Message } from 'discord.js';
 import { isCommand } from '../util/commandUtils';
-
-// TODO: Make this part dynamic via a command such as !coc [channel name]
-const eventSignChannelID = '597864917441183754';
-const channels = [ eventSignChannelID ].reduce((res, v) => ({...res, [v]: v}), {});
+import * as config from './config';
 
 export const ID = 'command-only-channels';
 export const callback = (client: Client) => {
@@ -12,8 +9,7 @@ export const callback = (client: Client) => {
       // commands are always OK
       return;
     }
-
-    if (message.channel.id in channels) {
+    if (config.configCache[ID].channels.includes(message.channel.id)) {
       // None command messages are not allowed in blacklisted channels
 
       console.debug(`Removed a message from a command-only-channels:`, message.content);

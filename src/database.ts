@@ -104,3 +104,34 @@ export const getParticipants = async (args: {
       timestamp: number;
     }),
   );
+
+export const updateConfig = async (
+  config: { [section: string]: { [key: string]: string },
+}) => Object.keys(config).map((sectionName) =>
+  db.collection('config')
+    .where('section_name', '==', sectionName)
+    .limit(1).get().then((snapshot) => {
+      if (snapshot.docs.length === 1) {
+        snapshot.docs[0].ref.set({
+          section_name: sectionName,
+          config: config[sectionName],
+        });
+      } else {
+        db.collection('config')
+          .add({
+            section_name: sectionName,
+            config: config[sectionName],
+          });
+      }
+    }),
+);
+
+export const getAllConfig = async () =>
+  db.collection('config').get().then((snapshot) =>
+      snapshot.docs
+        .map((doc) => doc.data())
+        .reduce((res, {section_name, config}) => ({
+        ...res,
+        [section_name]:  config,
+      }), {}),
+  );
