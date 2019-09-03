@@ -128,6 +128,11 @@ export const callback = async (client: Client) => {
     // Resuscitate display message
     const configChannel = client.channels
       .filter((channel) => channel.id === configCache.meta.channelID).array()[0] as TextChannel;
+
+    if (! configChannel) {
+      console.error(`Unexpected missing config channel: ${configCache.meta.channelID}`);
+      return;
+    }
     configChannel.fetchMessage(configCache.meta.displayMessageID)
       .then((message) => {
         console.info(`Connected to config channel: ${message.channel.id}`);
