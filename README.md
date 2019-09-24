@@ -16,6 +16,7 @@ Since emoji are really small on discord, this command will turn emotes into larg
 
 ### Improvements on old features
 
+* Event command should have different alternatives for how to sign up as available, ex: (Can lead)
 * Resuscitation of events should handle reactions made while the bot was offline
 
 ### General Features
