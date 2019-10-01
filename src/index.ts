@@ -10,6 +10,7 @@ const commands = fs.readdirSync(path.join(__dirname, 'commands'))
   .filter((fileName) => fileName.endsWith('.js')) // excludes type files such as demo.d.ts
   .map((fileName) => require(path.join(__dirname, 'commands', fileName)));
 
+client.on('error', console.error);
 client.on('ready', async ()  => {
   console.info(`Client ready`);
 
