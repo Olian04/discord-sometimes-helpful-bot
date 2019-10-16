@@ -5,7 +5,7 @@ import { EventMessage } from './EventMessage';
 
 export const ID = 'event';
 export const callback = (client: Client) => {
-  const handleMessage = async (message) => {
+  const handleMessage = async (message: Message) => {
     if (! isCommand(message.content)) { return; }
 
     const [command, ...args] = tokenizeCommand(message.content);
@@ -24,7 +24,7 @@ export const callback = (client: Client) => {
     const title = args.join(' ');
 
     const DynamicEventMessage = await (new EventMessage(title, []).sendTo(message.channel));
-    addEvent({
+    addEvent(message.guild.id, {
       title,
       message_id: DynamicEventMessage.message.id,
       channel_id: DynamicEventMessage.message.channel.id,
@@ -39,7 +39,7 @@ export const callback = (client: Client) => {
   const textChannels = client.channels.filter((channel) => channel.type === 'text') as Collection<string, TextChannel>;
   console.info(`Resuscitating events across ${textChannels.size} channels`);
   textChannels.forEach(async (channel: TextChannel) => {
-    const events =  await getAllEventInChannel({
+    const events =  await getAllEventInChannel(channel.guild.id, {
       channel_id: channel.id,
     });
 
@@ -51,7 +51,7 @@ export const callback = (client: Client) => {
         .then(async (eventMessage) => {
           console.debug(`Resuscitated event: ${event.title}`);
 
-          const participants =  (await getParticipants({
+          const participants =  (await getParticipants(channel.guild.id, {
             message_id: event.message_id,
           })).map(({ attendance, username, timestamp }) => ({
             name: username, attend: attendance, timestamp,
@@ -63,7 +63,7 @@ export const callback = (client: Client) => {
         .catch((err) => {
           // TODO: Purge event on msg deleted as well
           // Remove none existent messages from DB.
-          purgeEvent({
+          purgeEvent(channel.guild.id, {
             channel_id: event.channel_id,
             message_id: event.message_id,
           });

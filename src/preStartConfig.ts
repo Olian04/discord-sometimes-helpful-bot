@@ -1,5 +1,7 @@
 import betterLogging from 'better-logging';
-betterLogging(console);
+betterLogging(console, {
+  format: (ctx) => `${ctx.date} ${ctx.time24} ${ctx.type} ${ctx.msg}`,
+});
 
 import path from 'path';
 

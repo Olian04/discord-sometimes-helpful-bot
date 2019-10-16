@@ -8,38 +8,54 @@ const app = firebase.initializeApp({
 
 const db = app.firestore();
 
-export const addEvent = async (args: {
+export const createGuildEntryIfNotExist = async (guildID: string) =>
+  db.collection('guilds')
+    .doc(guildID)
+    .get().then(async (snapshot) => {
+      if (snapshot.exists) { return; }
+      await db.collection('guilds')
+        .doc(guildID)
+        .set({});
+    });
+
+export const addEvent = async (guildID: string, args: {
   message_id: string, channel_id: string, title: string,
-}) => db.collection('events')
+}) => db.collection('guilds')
+  .doc(guildID)
+  .collection('events')
   .add({
     message_id: args.message_id,
     channel_id: args.channel_id,
     title: args.title,
   });
 
-export const purgeEvent = async (args: {
+export const purgeEvent = async (guildID: string, args: {
   message_id: string, channel_id: string,
 }) => Promise.all([
-  deleteEvent({
+  deleteEvent(guildID, {
     channel_id: args.channel_id,
     message_id: args.message_id,
   }),
-  deleteEventParticipants({
+  deleteEventParticipants(guildID, {
     message_id: args.message_id,
   }),
 ]);
 
-export const deleteEvent = async (args: {
+export const deleteEvent = async (guildID: string, args: {
   message_id: string, channel_id: string,
-}) => db.collection('events')
+}) => db.collection('guilds')
+  .doc(guildID)
+  .collection('events')
   .where('message_id', '==', args.message_id)
   .where('channel_id', '==', args.channel_id)
   .get().then((snapshot) => snapshot.docs[0].ref)
   .then((ref) => ref.delete());
 
-export const deleteEventParticipants = async (args: {
+export const deleteEventParticipants = async (guildID: string, args: {
   message_id: string,
-}) => db.collection('participants')
+}) => db.collection('guilds')
+  .doc(guildID)
+  .collection('participants')
   .where('event_id', '==', args.message_id)
   .get().then((snapshot) => {
     snapshot.forEach((doc) => {
@@ -47,9 +63,11 @@ export const deleteEventParticipants = async (args: {
     });
   });
 
-export const updateEventTitle = async (args: {
+export const updateEventTitle = async (guildID: string, args: {
   newTitle: string, message_id: string, channel_id: string,
-}) => db.collection('events')
+}) => db.collection('guilds')
+  .doc(guildID)
+  .collection('events')
   .where('message_id', '==', args.message_id)
   .where('channel_id', '==', args.channel_id)
   .limit(1).get().then((snapshot) => snapshot.docs[0].ref)
@@ -57,9 +75,11 @@ export const updateEventTitle = async (args: {
     title: args.newTitle,
   }));
 
-export const getAllEventInChannel = async (args: {
+export const getAllEventInChannel = async (guildID: string, args: {
   channel_id: string,
-}) => db.collection('events')
+}) => db.collection('guilds')
+  .doc(guildID)
+  .collection('events')
   .where('channel_id', '==', args.channel_id)
   .get().then((snapshot) => {
     if (snapshot.size === 0) {
@@ -72,18 +92,22 @@ export const getAllEventInChannel = async (args: {
     });
   });
 
-export const addParticipant = async (args: {
+export const addParticipant = async (guildID: string, args: {
     event_id: string, username: string, attendance: 'yes' | 'no' | 'maybe',
-  }) => db.collection('participants').add({
+  }) => db.collection('guilds')
+    .doc(guildID)
+    .collection('participants').add({
     attendance: args.attendance,
     username: args.username,
     event_id: args.event_id,
     timestamp: Date.now(),
   });
 
-export const updateAttendance = async (args: {
+export const updateAttendance = async (guildID: string, args: {
   newAttendance: 'yes' | 'no' | 'maybe', event_id: string, username: string,
-}) => db.collection('participants')
+}) => db.collection('guilds')
+  .doc(guildID)
+  .collection('participants')
   .where('event_id', '==', args.event_id)
   .where('username', '==', args.username)
   .limit(1).get().then((snapshot) => snapshot.docs[0].ref)
@@ -92,9 +116,11 @@ export const updateAttendance = async (args: {
     timestamp: Date.now(),
   }));
 
-export const getParticipants = async (args: {
+export const getParticipants = async (guildID: string, args: {
   message_id: string,
-}) => db.collection('participants')
+}) => db.collection('guilds')
+  .doc(guildID)
+  .collection('participants')
   .where('event_id', '==', args.message_id)
   .get().then((snapshot) =>
     snapshot.docs.map((v) => v.data() as {
@@ -106,9 +132,12 @@ export const getParticipants = async (args: {
   );
 
 export const updateConfig = async (
+  guildID: string,
   config: { [section: string]: { [key: string]: string },
 }) => Object.keys(config).map((sectionName) =>
-  db.collection('config')
+  db.collection('guilds')
+    .doc(guildID)
+    .collection('config')
     .where('section_name', '==', sectionName)
     .limit(1).get().then((snapshot) => {
       if (snapshot.docs.length === 1) {
@@ -117,7 +146,9 @@ export const updateConfig = async (
           config: config[sectionName],
         });
       } else {
-        db.collection('config')
+        db.collection('guilds')
+          .doc(guildID)
+          .collection('config')
           .add({
             section_name: sectionName,
             config: config[sectionName],
@@ -126,8 +157,10 @@ export const updateConfig = async (
     }),
 );
 
-export const getAllConfig = async () =>
-  db.collection('config').get().then((snapshot) =>
+export const getAllConfig = async (guildID: string) =>
+  db.collection('guilds')
+    .doc(guildID)
+    .collection('config').get().then((snapshot) =>
       snapshot.docs
         .map((doc) => doc.data())
         .reduce((res, {section_name, config}) => ({

@@ -1,15 +1,17 @@
 import { Client, Message } from 'discord.js';
 import { isCommand } from '../util/commandUtils';
-import * as config from './config';
+import { getConf } from './config';
 
 export const ID = 'command-only-channels';
 export const callback = (client: Client) => {
   const messageHandler = async (message: Message) => {
+    const guildConf = await getConf(message.guild);
     if (isCommand(message.content) || message.author.bot) {
       // commands are always OK
       return;
     }
-    if (config.configCache[ID].channels.includes(message.channel.id)) {
+    if (guildConf.cache[ID] === undefined || guildConf.cache[ID].channels === undefined) { return; }
+    if (guildConf.cache[ID].channels.includes(message.channel.id)) {
       // None command messages are not allowed in blacklisted channels
 
       console.debug(`Removed a message from a command-only-channels:`, message.content);

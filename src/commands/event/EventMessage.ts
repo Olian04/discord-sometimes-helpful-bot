@@ -49,7 +49,7 @@ export class EventMessage extends DynamicMessage {
     if (participant) {
       participant.attend = attendance;
       participant.timestamp = Date.now();
-      updateAttendance({
+      updateAttendance(this.message.guild.id, {
         newAttendance: attendance,
         event_id: this.message.id,
         username: user.username,
@@ -60,7 +60,7 @@ export class EventMessage extends DynamicMessage {
         name: user.username,
         timestamp: Date.now(),
       });
-      addParticipant({
+      addParticipant(this.message.guild.id, {
         event_id: this.message.id,
         username: user.username,
         attendance,

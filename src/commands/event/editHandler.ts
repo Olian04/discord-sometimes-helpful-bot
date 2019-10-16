@@ -33,7 +33,7 @@ Ex: \`!title This is the new title!\`
       if (command === 'title') {
         const newTitle = args.join(' ');
         onChangeCB(newTitle);
-        updateEventTitle({
+        updateEventTitle(eventMessage.guild.id, {
           newTitle,
           message_id: eventMessage.id,
           channel_id: eventMessage.channel.id,
