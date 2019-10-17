@@ -1,5 +1,5 @@
 import { emoji } from 'node-emoji';
-import { IParticipant } from './interfaces';
+import { IParticipant } from './consts';
 
 export const constructEventMessage = (title: string, participants: IParticipant[]) => {
   const participants_yes = participants

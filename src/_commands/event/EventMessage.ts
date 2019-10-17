@@ -1,8 +1,8 @@
 import { DynamicMessage, OnReaction } from 'discord-dynamic-messages';
 import { User } from 'discord.js';
 import { addParticipant, updateAttendance } from '../../database';
+import { IParticipant } from './consts';
 import { editHandler } from './editHandler';
-import { IParticipant } from './interfaces';
 import { constructEventMessage } from './messageConstructor';
 
 export class EventMessage extends DynamicMessage {

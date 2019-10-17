@@ -1,7 +1,7 @@
 import { Message, RichEmbed } from 'discord.js';
 import { updateEventTitle } from '../../database';
 import { isCommand, tokenizeCommand } from '../../util/command';
-import { IEditHandlerArguments } from './interfaces';
+import { IEditHandlerArguments } from './consts';
 import { constructEventMessage } from './messageConstructor';
 
 export const editHandler = ({

@@ -1,14 +1,21 @@
+import { Commander } from 'discord-commander';
 import { Client, Message, PresenceStatus } from 'discord.js';
-import fs from 'fs';
-import path from 'path';
+import { EventCommand, eventOnReady } from './commands/event';
+import { LargeEmoteCommand } from './commands/large-emotes';
 import { args, discord_token } from './preStartConfig';
-import { isCommand } from './util/commandUtils';
+import { commandToken, isCommand } from './util/command';
 
 const client = new Client();
 
-const commands = fs.readdirSync(path.join(__dirname, 'commands'))
-  .filter((fileName) => fileName.endsWith('.js')) // excludes type files such as demo.d.ts
-  .map((fileName) => require(path.join(__dirname, 'commands', fileName)));
+const onReadyCallbacks = [
+  eventOnReady,
+];
+
+const commander = new Commander(commandToken, [
+  EventCommand,
+  LargeEmoteCommand,
+]);
+commander.deleteUnknownCommands = false;
 
 client.on('error', console.error);
 client.on('ready', async ()  => {
@@ -29,16 +36,6 @@ client.on('ready', async ()  => {
     },
   });
 
-  commands.forEach((command: { ID: string, commands: string[], callback: (client: Client) => void}) => {
-    console.info(`Registering command: ` + command.ID);
-    try {
-      command.callback(client);
-    } catch (err) {
-      console.error(`Error thrown with origin in command: ${command.ID}`);
-      console.error(err);
-    }
-  });
-
   client.on('message', async (message: Message) => {
     if (! isCommand(message.content)) { return; }
 
@@ -50,7 +47,12 @@ client.on('ready', async ()  => {
       `${Dark_Gray}[${RESET}${message.author.username}${Dark_Gray}]${RESET} ${message.content}`,
     );
   });
+
+  onReadyCallbacks.forEach((cb) => cb(client));
 });
+
+// discord-commander will start listening for messages
+commander.start(client);
 
 client.login(discord_token)
   .then(() => console.info(`Login successful`))

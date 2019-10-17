@@ -1,48 +1,51 @@
-import { Client, Message } from 'discord.js';
+import { Command, Event, parse, subscribe } from 'discord-commander';
 import * as fs from 'fs';
 import * as path from 'path';
-import { isCommand, tokenizeCommand } from '../util/commandUtils';
 
 const emoteNames = fs.readdirSync(path.join(__dirname, '..', '..', 'assets', 'emotes'))
-  .filter((fileName) => fileName.endsWith('.png')) // excludes type files such as demo.d.ts
+  .filter((fileName) => fileName.endsWith('.png'))
   .map((fileName) => fileName.substr(0, fileName.length - '.png'.length));
 
-export const ID = 'large-emotes';
-export const callback = (client: Client) => {
-  const messageHandler = async (message: Message) => {
-    if (!isCommand(message.content)) { return; }
+export class LargeEmoteCommand extends Command('emote') {
+  @parse.remaining private requestedEmote: string;
 
-    const [command, ...args] = tokenizeCommand(message.content);
+  @subscribe('new', 'edit')
+  public async onMessage(ctx: Event) {
+    this.requestedEmote = this.requestedEmote.trim();
 
-    if (command !== 'emote') { return; }
-    if (args.length < 1) { return; }
+    console.log(this.requestedEmote);
 
-    let [requestedEmote] = args;
-    if (requestedEmote.match(/^:.+:$/i)) {
-      // Unresolved emotes looks like this :some_name:
-      requestedEmote = requestedEmote.substring(1, requestedEmote.length - 1);
-    } else if (requestedEmote.match(/^<:.+:\d+>$/i)) {
-      // Resolved emotes looks like this <:emote_name:some_numerical_id>
-      requestedEmote = requestedEmote.substring(2, requestedEmote.lastIndexOf(':'));
-    }
-
-    if (! emoteNames.some((name) => name === requestedEmote)) {
-      await message.author.send(`Attempted to display unknown emote "${requestedEmote}"
-Available emotes are: ${emoteNames.join(', ')}`);
-
-      await message.delete(); // Clean up command
+    if (this.requestedEmote.length === 0) {
+      this.sendHelpText(ctx);
       return;
     }
 
-    await message.channel.send(`${message.author}`, {
+    if (this.requestedEmote.match(/^:.+:$/i)) {
+      // Unresolved emotes looks like this :some_name:
+      this.requestedEmote = this.requestedEmote.substring(1, this.requestedEmote.length - 1);
+    } else if (this.requestedEmote.match(/^<:.+:\d+>$/i)) {
+      // Resolved emotes looks like this <:emote_name:some_numerical_id>
+      this.requestedEmote = this.requestedEmote.substring(2, this.requestedEmote.lastIndexOf(':'));
+    }
+
+    if (! emoteNames.some((name) => name === this.requestedEmote)) {
+      this.sendHelpText(ctx);
+      return;
+    }
+
+    await ctx.channel.send(`${ctx.author}`, {
       files: [
-        path.join(__dirname, '..', '..', 'assets', 'emotes', `${requestedEmote}.png`),
+        path.join(__dirname, '..', '..', 'assets', 'emotes', `${this.requestedEmote}.png`),
       ],
     });
 
-    await message.delete(); // Clean up command
-  };
+    await ctx.message.delete(); // Clean up command
+  }
 
-  client.on('message', messageHandler);
-  client.on('messageUpdate', (_, newMessage) => messageHandler(newMessage));
-};
+  private async sendHelpText(ctx: Event) {
+    await ctx.author.send(`Attempted to display unknown emote "${this.requestedEmote}"
+    Available emotes are: ${emoteNames.join(', ')}`);
+
+    await ctx.message.delete(); // Clean up command
+  }
+}

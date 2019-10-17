@@ -1,14 +1,7 @@
 {
   "editor.codeActionsOnSave": {
-    "source.fixAll": true
+    "source.fixAll": true,
   },
   "javascript.implicitProjectConfig.experimentalDecorators": true,
   "tslint.configFile": "tslint.json",
-  "sqltools.connections": [
-    {
-      "database": "./database.db",
-      "dialect": "SQLite",
-      "name": "Sometimes Helpfull DB"
-    }
-  ]
 }

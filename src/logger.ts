@@ -1,4 +1,4 @@
-import { Config } from './commands/config/Config';
+import { Config } from './_commands/config/Config';
 
 const tag = (msg: string, color: string = console.color.RESET) =>
   `${console.color.Dark_Gray}[${color}`

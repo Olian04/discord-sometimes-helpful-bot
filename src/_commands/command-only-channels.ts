@@ -1,5 +1,5 @@
 import { Client, Message } from 'discord.js';
-import { isCommand } from '../util/commandUtils';
+import { isCommand } from '../util/command';
 import { getConf } from './config';
 
 export const ID = 'command-only-channels';

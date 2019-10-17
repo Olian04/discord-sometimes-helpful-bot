@@ -1,7 +1,8 @@
 import { Client, Guild, Message, TextChannel } from 'discord.js';
 import * as ini from 'ini';
 import { createGuildEntryIfNotExist, updateConfig } from '../../database';
-import { getGuildID, isCommand, isDirectMessage, tokenizeCommand } from '../../util/commandUtils';
+import { isCommand, isDirectMessage, tokenizeCommand } from '../../util/command';
+import { getGuildID} from '../../util/guild';
 import { Config } from './Config';
 import { DisplayConfig } from './DisplayConfig';
 
@@ -24,7 +25,7 @@ export const callback = async (client: Client) => {
     if (message.author.bot) { return; }
     if (isDirectMessage(message)) { return; }
 
-    await createGuildEntryIfNotExist(message.guild.id); 
+    await createGuildEntryIfNotExist(message.guild.id);
 
     const guildConf = await getConf(message.guild);
 
