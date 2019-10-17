@@ -1,6 +1,7 @@
 import { Command, Event, parse, subscribe } from 'discord-commander';
 import * as fs from 'fs';
 import * as path from 'path';
+import { deleteIfAble } from '../util/command';
 
 const emoteNames = fs.readdirSync(path.join(__dirname, '..', '..', 'assets', 'emotes'))
   .filter((fileName) => fileName.endsWith('.png'))
@@ -39,13 +40,13 @@ export class LargeEmoteCommand extends Command('emote') {
       ],
     });
 
-    await ctx.message.delete(); // Clean up command
+    await deleteIfAble(ctx.message); // delete command from chat log
   }
 
   private async sendHelpText(ctx: Event) {
     await ctx.author.send(`Attempted to display unknown emote "${this.requestedEmote}"
     Available emotes are: ${emoteNames.join(', ')}`);
 
-    await ctx.message.delete(); // Clean up command
+    await deleteIfAble(ctx.message); // delete command from chat log
   }
 }

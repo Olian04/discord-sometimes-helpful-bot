@@ -1,6 +1,7 @@
 import { Message, RichEmbed } from 'discord.js';
 import { updateEventTitle } from '../../database';
 import { isCommand, tokenizeCommand } from '../../util/command';
+import { getGuildID } from '../../util/guild';
 import { IEditHandlerArguments } from './interfaces';
 import { constructEventMessage } from './messageConstructor';
 
@@ -19,6 +20,8 @@ Ex: \`!title This is the new title!\`
 `) as Message;
 
     // Collect response
+    // TODO: This needs to have a maximum wait time,
+    //    and needs to auto cancel when another edit by the same user is initialized
     const response = (await user.dmChannel.awaitMessages((msg) => !msg.author.bot, {
       max: 1,
     })).first();
@@ -33,7 +36,7 @@ Ex: \`!title This is the new title!\`
       if (command === 'title') {
         const newTitle = args.join(' ');
         onChangeCB(newTitle);
-        updateEventTitle(eventMessage.guild.id, {
+        updateEventTitle(getGuildID(eventMessage), {
           newTitle,
           message_id: eventMessage.id,
           channel_id: eventMessage.channel.id,

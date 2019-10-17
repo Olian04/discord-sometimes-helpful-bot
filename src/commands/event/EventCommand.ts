@@ -1,5 +1,7 @@
 import { Command, Event, parse, subscribe } from 'discord-commander';
 import { addEvent } from '../../database';
+import { deleteIfAble } from '../../util/command';
+import { getGuildID } from '../../util/guild';
 import { EventMessage } from './EventMessage';
 
 export class EventCommand extends Command('event') {
@@ -14,12 +16,12 @@ export class EventCommand extends Command('event') {
 
   private async createDynamicMessage(ctx: Event) {
     const DynamicEventMessage = await (new EventMessage(this.title, []).sendTo(ctx.channel));
-    addEvent(ctx.message.guild.id, {
+    addEvent(getGuildID(ctx.message), {
       title: this.title,
       message_id: DynamicEventMessage.message.id,
       channel_id: DynamicEventMessage.message.channel.id,
     });
-    ctx.message.delete(); // delete command from chat log
+    deleteIfAble(ctx.message); // delete command from chat log
   }
 
   private validateTitle(ctx: Event) {
@@ -28,7 +30,7 @@ export class EventCommand extends Command('event') {
         'Failed to create an event. Event title was missing.\n' +
         '```\nYou wrote: ' + ctx.message.content + '\nIt should be: !event [Title]\n```',
       );
-      ctx.message.delete(); // delete command from chat log
+      deleteIfAble(ctx.message); // delete command from chat log
       return false;
     }
     return true;

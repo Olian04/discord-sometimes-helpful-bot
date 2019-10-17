@@ -1,6 +1,7 @@
 import { DynamicMessage, OnReaction } from 'discord-dynamic-messages';
 import { User } from 'discord.js';
 import { addParticipant, updateAttendance } from '../../database';
+import { getGuildID } from '../../util/guild';
 import { editHandler } from './editHandler';
 import { IParticipant } from './interfaces';
 import { constructEventMessage } from './messageConstructor';
@@ -49,7 +50,7 @@ export class EventMessage extends DynamicMessage {
     if (participant) {
       participant.attend = attendance;
       participant.timestamp = Date.now();
-      updateAttendance(this.message.guild.id, {
+      updateAttendance(getGuildID(this.message), {
         newAttendance: attendance,
         event_id: this.message.id,
         username: user.username,
@@ -60,7 +61,7 @@ export class EventMessage extends DynamicMessage {
         name: user.username,
         timestamp: Date.now(),
       });
-      addParticipant(this.message.guild.id, {
+      addParticipant(getGuildID(this.message), {
         event_id: this.message.id,
         username: user.username,
         attendance,

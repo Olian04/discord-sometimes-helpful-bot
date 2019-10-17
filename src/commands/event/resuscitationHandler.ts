@@ -1,6 +1,7 @@
 import { Client } from 'discord.js';
 
 export const resuscitationHandler = (client: Client) => {
+  // TODO: This needs to be looked over regarding the database restructuring
   /*
   // Resuscitate events from DB
   const textChannels = client.channels.filter((channel) => channel.type === 'text') as Collection<string, TextChannel>;
