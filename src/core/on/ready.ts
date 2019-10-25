@@ -1,8 +1,10 @@
+import { configOnReady } from '@/lib/config';
+import { eventOnReady } from '@/lib/event';
 import { Client, PresenceStatus } from 'discord.js';
-import { eventOnReady } from '../../lib/event';
 import { args } from '../preStartConfig';
 
 const onReadyCallbacks = [
+  configOnReady,
   eventOnReady,
 ];
 
