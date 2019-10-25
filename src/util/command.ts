@@ -1,5 +1,5 @@
 import { Message } from 'discord.js';
-import { args } from '../preStartConfig';
+import { args } from '../core/preStartConfig';
 
 export const commandToken = args.env === 'development' ? '$' : '!';
 
@@ -17,6 +17,8 @@ export const deleteIfAble = async (message: Message) => {
 };
 
 export const isCommand = (message: string) => message.startsWith(commandToken);
+
+export const extractCommand = (message: string) => message.substr(commandToken.length).match(/^\w*/i)[0];
 
 export const isDirectMessage =  (message: Message) => message.guild === null;
 

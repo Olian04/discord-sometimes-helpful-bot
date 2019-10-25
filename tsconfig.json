@@ -5,6 +5,10 @@
       "lib": [
           "esnext",
       ],
+      "baseUrl": "src",
+      "paths": {
+        "@/*": ["*"],
+        },
       "outDir": "dist/",
       "declaration": true,
       "sourceMap": true,
