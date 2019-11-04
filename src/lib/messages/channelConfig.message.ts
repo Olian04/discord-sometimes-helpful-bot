@@ -1,7 +1,6 @@
 import { config } from '@/config';
 import { db } from '@/database';
 import { IChannelConfig } from '@/interfaces/guildConfig.interface';
-import { deleteIfAble } from '@/util/command';
 import { logger } from '@/util/logger';
 import { DynamicMessage, OnReaction } from 'discord-dynamic-messages';
 import { emoji } from 'node-emoji';
@@ -17,6 +16,7 @@ export class ChannelConfig extends DynamicMessage {
     this.configCache = {
       ...config.guildConfigs[this.target.guildID].channels[this.target.channelID],
     };
+    this.configCache.channelDisplayName = null; // Ensures that the display name is forced to update
     logger.debug.dynamicMessage(`Constructed channel config for channel: ${target.channelID}`);
   }
 
@@ -55,7 +55,15 @@ export class ChannelConfig extends DynamicMessage {
       return 'Changes submitted.';
     }
 
-    return `**[config.channel]** Channel ID: ${this.target.channelID}
+    // I don't want to have to do this... but i don't have the patience to redesign this component again.
+    if (this.message !== null && this.configCache.channelDisplayName === null) {
+      this.configCache.channelDisplayName = this.message.client
+        .guilds.get(this.target.guildID)
+        .channels.get(this.target.channelID)
+        .name;
+    }
+
+    return `**[config.channel]** ${this.configCache.channelDisplayName}
 Current config (with queued changes):
 \`\`\`diff
 ${this.configCache.isCommandOnly ? '+' : '-'} [1] isCommandOnly

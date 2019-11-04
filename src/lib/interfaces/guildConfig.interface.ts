@@ -5,5 +5,6 @@ export interface IGuildConfig {
 }
 
 export interface IChannelConfig {
+  channelDisplayName: string;
   isCommandOnly: boolean;
 }
