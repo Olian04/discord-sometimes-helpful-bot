@@ -1,21 +1,4 @@
-import 'module-alias/register';
-
-import { start } from './core/app';
-import { args } from './core/preStartConfig';
-
-(async () => {
-  while (true) {
-    try {
-      await start();
-    } catch (err) {
-      console.error(err);
-      if (args.env === 'development') {
-        // Don't restart while in development mode.
-        return;
-      }
-
-      // TODO: Figure out if this restarting logic actually works
-      console.error(`An unexpected error occurred. Restarting client...`);
-    }
-  }
-})();
+// tslint:disable:ordered-imports
+import 'module-alias/register'; // see compilerOptions.paths in "tsconfig.json"
+import './lib/config'; // loads environment variables & command line arguments
+import './lib/app'; // bootstraps the rest of the app

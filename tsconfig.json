@@ -5,7 +5,7 @@
       "lib": [
           "esnext",
       ],
-      "baseUrl": "src",
+      "baseUrl": "src/lib",
       "paths": {
         "@/*": ["*"],
         },
