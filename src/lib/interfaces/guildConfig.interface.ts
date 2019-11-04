@@ -1,13 +1,9 @@
 export interface IGuildConfig {
-  commands: {
-    [commandName: string]: {
-      includeChannels: IChannelData[],
-      excludeChannels: IChannelData[],
-    },
+  channels: {
+    [channelID: string]: IChannelConfig,
   };
 }
 
-interface IChannelData {
-  id: string;
-  displayName: string;
+export interface IChannelConfig {
+  isCommandOnly: boolean;
 }

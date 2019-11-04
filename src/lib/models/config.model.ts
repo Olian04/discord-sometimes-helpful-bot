@@ -2,7 +2,7 @@ import { Reference } from '@/database';
 import { IGuildConfig } from '@/interfaces/guildConfig.interface';
 
 const defaultConfig: IGuildConfig = {
-  commands: {},
+  channels: {},
 };
 
 export const configModelFactory = (guildRef: Reference) => ({
@@ -13,7 +13,7 @@ export const configModelFactory = (guildRef: Reference) => ({
   onChange: (cb: (conf: IGuildConfig) => void) => guildRef
     .child('config').on('value', (snap) => {
       const conf = snap.val();
-      if (conf === undefined) {
+      if (! conf) {
         guildRef.child('config').transaction(() => defaultConfig);
       }
       cb(conf || defaultConfig);
