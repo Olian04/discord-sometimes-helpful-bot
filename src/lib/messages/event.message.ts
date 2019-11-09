@@ -4,11 +4,16 @@ import { Attendance } from '@/interfaces/participant.interface';
 import { constructEventMessage } from '@/messages/event.helpers/messageConstructor';
 import { logger } from '@/util/logger';
 import { DynamicMessage, OnReaction } from 'discord-dynamic-messages';
-import { Guild, TextChannel, User } from 'discord.js';
+import { DiscordAPIError, Guild, TextChannel, User } from 'discord.js';
 
 export class EventMessage extends DynamicMessage {
   constructor(private eventData: IEvent) {
-    super();
+    super({
+      volatile: false,
+      onError: (err) => {
+        logger.debug.dynamicMessage(String(err));
+      },
+    });
     db(this.eventData.guildID).event.onEventChange(this.eventData.id, (newEventData) => {
       if (newEventData === undefined) {
         logger.warn.dynamicMessage(`Unexpected "undefined" eventData in EventMessage`);

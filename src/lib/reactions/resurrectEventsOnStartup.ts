@@ -1,7 +1,7 @@
 import { db } from '@/database';
 import { EventMessage } from '@/messages/event.message';
 import { logger } from '@/util/logger';
-import { Guild, TextChannel } from 'discord.js';
+import { DiscordAPIError, Guild, Message, TextChannel } from 'discord.js';
 
 export const setup = (guild: Guild) =>  {
   // Resurrect events stored in db
@@ -15,15 +15,18 @@ export const setup = (guild: Guild) =>  {
         status: 'toBeArchived',
       });
     };
-    try {
-      const message = await channel.fetchMessage(event.messageID);
-      if (message) {
-        new EventMessage(event).attachTo(message);
-        logger.log.reaction(`Resurrected event: ${event.title}`);
-      } else {
+
+    const message = await channel.fetchMessage(event.messageID)
+      .catch((err: DiscordAPIError) => {
+        logger.debug.reaction(`Archiving event due to exception when fetching message`);
         markForArchivation();
-      }
-    } catch {
+      });
+
+    if (message) {
+      new EventMessage(event).attachTo(message);
+      logger.log.reaction(`Resurrected event: ${event.title}`);
+    } else {
+      logger.debug.reaction(`Archiving event due to null message`);
       markForArchivation();
     }
   });

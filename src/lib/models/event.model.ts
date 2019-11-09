@@ -9,6 +9,14 @@ const constructEvent = (ev: IEvent): IEvent => ({
 });
 
 export const eventModelFactory = (guildRef: Reference) => ({
+  getEventID: (messageID: string, cb: (maybeEventID: string | null) => void) => guildRef
+    .child('events').on('value', (snap) => {
+      const snapVal =  snap.val();
+      const events = Object.keys(snapVal).map((k) => ({id: k, data: snapVal[k]})) as Array<{id: string, data: IEvent}>;
+      const maybeEvent = events.find((ev) => ev.data.messageID === messageID);
+      cb(maybeEvent ? maybeEvent.id : null);
+    }),
+
   createNewEvent: (event: Pick<IEvent, 'channelID' | 'guildID' | 'title'>) => {
     const id = uuid4();
     const newEvent: IEvent = {
@@ -62,9 +70,12 @@ export const eventModelFactory = (guildRef: Reference) => ({
     }),
 
   oncePerEvent: (cb: (event: IEvent) => void) => guildRef
-    .child('events').once('child_added', (snap) => {
-      const event: IEvent = constructEvent(snap.val());
-      cb(event);
+    .child('events').once('value', (snap) => {
+      const snapVal =  snap.val() || {};
+      const events = Object.keys(snapVal).map((k) => snapVal[k]) as IEvent[];
+      events.forEach((event) => {
+        cb(event);
+      });
     }),
 
   onAnyEventChanged: (cb: (event: IEvent) => void) => guildRef

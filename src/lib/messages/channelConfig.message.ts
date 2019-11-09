@@ -10,13 +10,30 @@ import { emoji } from 'node-emoji';
 
 export class ChannelConfig extends DynamicMessage {
   private configCache: IChannelConfig;
+  private secondsRemaining: number;
   private isSubmitted = false;
+  private hasTimedOut = false;
   constructor(private target: { guildID: string, channelID: string }) {
     super();
     this.configCache = {
       ...config.guildConfigs[this.target.guildID].channels[this.target.channelID],
     };
     this.configCache.channelDisplayName = null; // Ensures that the display name is forced to update
+    this.secondsRemaining = 30;
+    const tick = () => setTimeout(() => {
+      if (! this.message) {
+        tick();
+        return;
+      }
+      this.secondsRemaining -= 10;
+      if (this.secondsRemaining > 0) {
+        tick();
+      } else {
+        this.hasTimedOut = true;
+      }
+      this.reRender();
+    }, 10000);
+    tick();
     logger.debug.dynamicMessage(`Constructed channel config for channel: ${target.channelID}`);
   }
 
@@ -24,7 +41,7 @@ export class ChannelConfig extends DynamicMessage {
     removeWhenDone: false,
   })
   public one() {
-    if (this.isSubmitted) { return; }
+    if (this.isSubmitted || this.hasTimedOut) { return; }
     this.configCache.isCommandOnly = !this.configCache.isCommandOnly;
   }
 
@@ -32,7 +49,7 @@ export class ChannelConfig extends DynamicMessage {
     removeWhenDone: false,
   })
   public submitChanges() {
-    if (this.isSubmitted) { return; }
+    if (this.isSubmitted || this.hasTimedOut) { return; }
     db(this.target.guildID).config.update((conf) => {
       return {
         ...(conf || {}),
@@ -54,6 +71,9 @@ export class ChannelConfig extends DynamicMessage {
     if (this.isSubmitted) {
       return 'Changes submitted.';
     }
+    if (this.hasTimedOut) {
+      return 'Changes discarded. Time limit exceeded.';
+    }
 
     // I don't want to have to do this... but i don't have the patience to redesign this component again.
     if (this.message !== null && this.configCache.channelDisplayName === null) {
@@ -63,7 +83,8 @@ export class ChannelConfig extends DynamicMessage {
         .name;
     }
 
-    return `**[config.channel]** ${this.configCache.channelDisplayName}
+    return `*Less than ${this.secondsRemaining}s remaining.*
+**[config.channel]** ${this.configCache.channelDisplayName}
 Current config (with queued changes):
 \`\`\`diff
 ${this.configCache.isCommandOnly ? '+' : '-'} [1] isCommandOnly

@@ -1,8 +1,9 @@
 import { commander } from '@/commander';
 import { config } from '@/config';
-import * as archiveRemovedMessages from '@/reactions/archiveMarkedEvent';
+import * as archiveMarkedMessages from '@/reactions/archiveMarkedEvent';
 import * as createEventMessage from '@/reactions/createNewEvent';
 import * as keepConfigUpdated from '@/reactions/keepConfigUpdated';
+import * as markForArchivationDeletedEvents from '@/reactions/markForArchivationDeletedEvents';
 import * as resurrectEventsOnStartup from '@/reactions/resurrectEventsOnStartup';
 import { logger } from '@/util/logger';
 import { Client, Message } from 'discord.js';
@@ -10,7 +11,8 @@ import { deleteIfAble } from './util/command';
 
 const reactions = [
   keepConfigUpdated,
-  archiveRemovedMessages,
+  markForArchivationDeletedEvents,
+  archiveMarkedMessages,
   resurrectEventsOnStartup,
   createEventMessage,
 ];
