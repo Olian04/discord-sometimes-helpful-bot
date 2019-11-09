@@ -1,10 +1,11 @@
+import { legacyEditHandler } from '@/../legacy/event.editHandler';
 import { db } from '@/database';
 import { IEvent } from '@/interfaces/event.interface';
 import { Attendance } from '@/interfaces/participant.interface';
 import { constructEventMessage } from '@/messages/event.helpers/messageConstructor';
 import { logger } from '@/util/logger';
 import { DynamicMessage, OnReaction } from 'discord-dynamic-messages';
-import { DiscordAPIError, Guild, TextChannel, User } from 'discord.js';
+import { Guild, Message, MessageReaction, TextChannel, User } from 'discord.js';
 
 export class EventMessage extends DynamicMessage {
   constructor(private eventData: IEvent) {
@@ -40,6 +41,16 @@ export class EventMessage extends DynamicMessage {
   @OnReaction(':grey_question:', { triggerRender: false })
   public attendMaybe(user: User, channel: TextChannel) {
     this.updateAttendance(user, channel.guild, 'maybe');
+  }
+
+  @OnReaction(':wrench:', { triggerRender: false, hidden: true })
+  public initiateEditSequence(user: User, channel: TextChannel, reaction: MessageReaction) {
+    legacyEditHandler({
+      eventMessage: this.message,
+      participants: this.eventData.participants,
+      reaction,
+      title: this.eventData.title,
+    });
   }
 
   public render() {
