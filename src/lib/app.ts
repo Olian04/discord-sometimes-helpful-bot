@@ -26,8 +26,9 @@ client.on('ready', () => {
 });
 
 client.on('message', (message: Message) => {
-  if (message.guild === undefined) {
+  if (message.guild === null) {
     // Message was sent in a DM or a group DM.
+    logger.debug.app(`Ignored message because guild was null`);
     return;
   }
   if (message.author.bot) { return; }
