@@ -2,7 +2,7 @@ import { args, discord_token, firebase_config } from '@/preStartConfig';
 import { Record } from '@/util/record';
 import { LogLevels } from 'discord-commander';
 import * as path from 'path';
-import { IGuildConfig } from './interfaces/guildConfig.interface';
+import { IChannelConfig, IGuildConfig } from './interfaces/guildConfig.interface';
 
 class Config extends Record<Config> {
   public commander: {
@@ -35,3 +35,6 @@ export const config = new Config({
   guildConfigs: {},
   assetsRoot: path.join(__dirname, '..', '..', 'assets'),
 });
+
+export const getChannelConfig = (guildID: string, channelID: string): IChannelConfig =>
+  config.guildConfigs[guildID].channels[channelID];

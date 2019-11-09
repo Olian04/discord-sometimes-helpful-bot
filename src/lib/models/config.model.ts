@@ -5,6 +5,8 @@ import { DeepPartial } from '@/util/deepPartial';
 const defaultChannelConfig: () => IChannelConfig = () => ({
   channelDisplayName: 'unset',
   isCommandOnly: false,
+  allowCommand_emote: true,
+  allowCommand_event: false,
 });
 
 const constructConfigObject = (conf: DeepPartial<IGuildConfig>): IGuildConfig => ({
@@ -31,10 +33,10 @@ const constructConfigObject = (conf: DeepPartial<IGuildConfig>): IGuildConfig =>
 export const configModelFactory = (guildRef: Reference) => ({
 
   update: (cb: (conf: IGuildConfig) => IGuildConfig) => guildRef
-  .child('config').transaction((maybeConf: IGuildConfig) => {
-    const conf = constructConfigObject(maybeConf);
-    return cb(conf);
-  }),
+    .child('config').transaction((maybeConf: IGuildConfig) => {
+      const conf = constructConfigObject(maybeConf);
+      return cb(conf);
+    }),
 
   onChange: (cb: (conf: IGuildConfig) => void) => guildRef
     .child('config').on('value', (snap) => {

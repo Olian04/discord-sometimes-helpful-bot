@@ -1,4 +1,4 @@
-import { config } from '@/config';
+import { config, getChannelConfig } from '@/config';
 import { db } from '@/database';
 import { deleteIfAble } from '@/util/command';
 import { logger } from '@/util/logger';
@@ -9,6 +9,12 @@ export class EventCommand extends Command('event') {
 
   @subscribe('new', 'edit')
   public async onMessage(ctx: Event) {
+    const conf = getChannelConfig(ctx.message.guild.id, ctx.channel.id);
+    if (conf.allowCommand_event === false) {
+      logger.debug.dynamicMessage(`Event command prevented due to channel config`);
+      ctx.message.author.send(`A message you wrote has been removed due to restrictions put on the channel.`);
+      return;
+    }
     this.title = this.title.trim();
     if (! this.validateTitle(ctx)) { return; }
     this.createDynamicMessage(ctx);

@@ -1,4 +1,4 @@
-import { config } from '@/config';
+import { config, getChannelConfig } from '@/config';
 import { deleteIfAble } from '@/util/command';
 import { logger } from '@/util/logger';
 import { Command, Event, parse, subscribe } from 'discord-commander';
@@ -15,6 +15,13 @@ export class LargeEmoteCommand extends Command('emote') {
 
   @subscribe('new', 'edit')
   public async onMessage(ctx: Event) {
+    const conf = getChannelConfig(ctx.message.guild.id, ctx.channel.id);
+    if (conf.allowCommand_emote === false) {
+      logger.debug.dynamicMessage(`Event command prevented due to channel config`);
+      ctx.message.author.send(`A message you wrote has been removed due to restrictions put on the channel.`);
+      return;
+    }
+
     this.requestedEmote = this.requestedEmote.trim();
 
     if (this.requestedEmote.length === 0) {

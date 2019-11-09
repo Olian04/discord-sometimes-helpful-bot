@@ -11,7 +11,7 @@ const constructEvent = (ev: IEvent): IEvent => ({
 export const eventModelFactory = (guildRef: Reference) => ({
   getEventID: (messageID: string, cb: (maybeEventID: string | null) => void) => guildRef
     .child('events').on('value', (snap) => {
-      const snapVal =  snap.val();
+      const snapVal = snap.val() || {};
       const events = Object.keys(snapVal).map((k) => ({id: k, data: snapVal[k]})) as Array<{id: string, data: IEvent}>;
       const maybeEvent = events.find((ev) => ev.data.messageID === messageID);
       cb(maybeEvent ? maybeEvent.id : null);

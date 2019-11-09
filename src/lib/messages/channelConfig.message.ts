@@ -10,7 +10,7 @@ import { emoji } from 'node-emoji';
 
 export class ChannelConfig extends DynamicMessage {
   private configCache: IChannelConfig;
-  private secondsRemaining: number;
+  private timeOutDuration: number = 5 * 60 * 1000; // 5min
   private isSubmitted = false;
   private hasTimedOut = false;
   constructor(private target: { guildID: string, channelID: string }) {
@@ -19,30 +19,37 @@ export class ChannelConfig extends DynamicMessage {
       ...config.guildConfigs[this.target.guildID].channels[this.target.channelID],
     };
     this.configCache.channelDisplayName = null; // Ensures that the display name is forced to update
-    this.secondsRemaining = 30;
-    const tick = () => setTimeout(() => {
-      if (! this.message) {
-        tick();
-        return;
-      }
-      this.secondsRemaining -= 10;
-      if (this.secondsRemaining > 0) {
-        tick();
-      } else {
-        this.hasTimedOut = true;
-      }
+
+    setTimeout(() => {
+      this.hasTimedOut = true;
       this.reRender();
-    }, 10000);
-    tick();
+    }, this.timeOutDuration);
+
     logger.debug.dynamicMessage(`Constructed channel config for channel: ${target.channelID}`);
   }
 
   @OnReaction(':one:', {
     removeWhenDone: false,
   })
-  public one() {
+  public toggleIsCommandOnly() {
     if (this.isSubmitted || this.hasTimedOut) { return; }
     this.configCache.isCommandOnly = !this.configCache.isCommandOnly;
+  }
+
+  @OnReaction(':two:', {
+    removeWhenDone: false,
+  })
+  public toggleAllowCommandEmote() {
+    if (this.isSubmitted || this.hasTimedOut) { return; }
+    this.configCache.allowCommand_emote = !this.configCache.allowCommand_emote;
+  }
+
+  @OnReaction(':three:', {
+    removeWhenDone: false,
+  })
+  public toggleAllowCommandEvent() {
+    if (this.isSubmitted || this.hasTimedOut) { return; }
+    this.configCache.allowCommand_event = !this.configCache.allowCommand_event;
   }
 
   @OnReaction(':floppy_disk:', {
@@ -83,11 +90,12 @@ export class ChannelConfig extends DynamicMessage {
         .name;
     }
 
-    return `*Less than ${this.secondsRemaining}s remaining.*
-**[config.channel]** ${this.configCache.channelDisplayName}
+    return `**[config.channel]** ${this.configCache.channelDisplayName}
 Current config (with queued changes):
 \`\`\`diff
 ${this.configCache.isCommandOnly ? '+' : '-'} [1] isCommandOnly
+${this.configCache.allowCommand_emote ? '+' : '-'} [1] allowCommand_emote
+${this.configCache.allowCommand_event ? '+' : '-'} [1] allowCommand_event
 \`\`\`
 Queue a toggle change by reacting with the associated number.
 Submit all queued changes by reacting with ${emoji.floppy_disk}
