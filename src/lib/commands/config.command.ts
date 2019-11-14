@@ -1,5 +1,4 @@
 import { config } from '@/config';
-import { db } from '@/database';
 import { ChannelConfig } from '@/messages/channelConfig.message';
 import { deleteIfAble } from '@/util/command';
 import { logger } from '@/util/logger';
