@@ -5,7 +5,7 @@ import { logger } from '@/util/logger';
 logger.warn.app(`Loaded legacy module: event.editHandler.ts`);
 
 import { IParticipant } from '@/interfaces/participant.interface';
-import { Message, MessageReaction, RichEmbed } from 'discord.js';
+import { Message, MessageReaction } from 'discord.js';
 
 // from './consts'
 interface IEditHandlerArguments {
