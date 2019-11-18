@@ -17,18 +17,16 @@ Since emoji are really small on discord, this command will turn emotes into larg
 ### Improvements on old features
 
 * Event command should have different alternatives for how to sign up as available, ex: (Can lead)
-* Resuscitation of events should handle reactions made while the bot was offline
 
 ### General Features
 
-* Mark text channels as "command only" and delete all messages that does not contain commands.
+* Generate embeds using a vissual tool that gets bound to a temporary command `!embed 123456789`. (https://github.com/DiscordWebsite/Embed)
 
 ### New Commands
 
 * Ready check: Starting a ready check for a given voice chanel. Will display a checklist for all players in the voice channel. Will check as READY when a player reacts to the comment.
 * Automatic roll assignment based on the reacted emoji.
 * Help command that shows what the bot can do.
-* Xur: Retrieves information about the destiny 2 NPC Xur.
 
 ## Prerequisite
 
