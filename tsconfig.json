@@ -5,9 +5,13 @@
       "lib": [
           "esnext",
       ],
+      "baseUrl": "src/lib",
+      "paths": {
+        "@/*": ["*"],
+        },
       "outDir": "dist/",
       "declaration": true,
-       "sourceMap": true,
+      "sourceMap": true,
       "allowSyntheticDefaultImports": true,
       "esModuleInterop": true,
       "noImplicitReturns": true,

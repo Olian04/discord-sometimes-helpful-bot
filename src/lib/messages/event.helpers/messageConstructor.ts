@@ -1,21 +1,24 @@
+import { IParticipant } from '@/interfaces/participant.interface';
 import { emoji } from 'node-emoji';
-import { IParticipant } from './consts';
 
-export const constructEventMessage = (title: string, participants: IParticipant[]) => {
+export const constructEventMessage = (
+  title: string,
+  participants: Array<Pick<IParticipant, 'attendance' | 'timestamp' | 'nickname'>>,
+  ) => {
   const participants_yes = participants
-    .filter(({ attend }) => attend === 'yes')
+    .filter(({ attendance }) => attendance === 'yes')
     .sort((a, b) => a.timestamp - b.timestamp)
-    .map((participant) => `+ ${participant.name}`);
+    .map((participant) => `+ ${participant.nickname}`);
 
   const participants_no = participants
-    .filter(({ attend }) => attend === 'no')
+    .filter(({ attendance }) => attendance === 'no')
     .sort((a, b) => a.timestamp - b.timestamp)
-    .map((participant) => `- ${participant.name}`);
+    .map((participant) => `- ${participant.nickname}`);
 
   const participants_maybe = participants
-    .filter(({ attend }) => attend === 'maybe')
+    .filter(({ attendance }) => attendance === 'maybe')
     .sort((a, b) => a.timestamp - b.timestamp)
-    .map((participant) => `? ${participant.name}`);
+    .map((participant) => `? ${participant.nickname}`);
 
   const display_participants = [
     ...participants_yes,
