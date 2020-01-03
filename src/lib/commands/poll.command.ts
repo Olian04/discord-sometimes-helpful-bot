@@ -23,6 +23,12 @@ export class PollCommand extends Command('poll') {
       return;
     }
 
+    if (this.voteAlternatives.length > 10) {
+      logger.debug.command(`To many vote alternatives provided`);
+      this.sendHelpText(ctx);
+      return;
+    }
+
     this.voteAlternatives = this.voteAlternatives.map((s) => s.trim());
     this.title = this.title.trim();
 
@@ -39,7 +45,7 @@ export class PollCommand extends Command('poll') {
 
   private async sendHelpText(ctx: Event) {
     await ctx.author.send(`Error when creating poll.
-    A the poll command requires an sequence of quoted strings as arguments.`);
+The poll command requires an sequence of up to 10 semicolon separated strings as arguments.`);
 
     await deleteIfAble(ctx.message); // delete command from chat log
     logger.debug.command(`Sent help text to: ${ctx.author.username}`);
