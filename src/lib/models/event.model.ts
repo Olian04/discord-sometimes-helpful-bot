@@ -1,6 +1,6 @@
 import { Reference } from '@/database';
 import { IEvent } from '@/interfaces/event.interface';
-import { IParticipant } from '@/interfaces/participant.interface';
+import { IEventParticipant } from '@/interfaces/eventParticipant.interface';
 import uuid4 from 'uuid/v4';
 
 const constructEvent = (ev: IEvent): IEvent => ({
@@ -30,7 +30,10 @@ export const eventModelFactory = (guildRef: Reference) => ({
     return id;
   },
 
-  updateAttendance: (eventID: string, participant: Pick<IParticipant, 'attendance' | 'userID' | 'nickname'>) => guildRef
+  updateAttendance: (
+    eventID: string,
+    participant: Pick<IEventParticipant, 'attendance' | 'userID' | 'nickname'>,
+  ) => guildRef
     .child('events').child(eventID).transaction((ev: IEvent) => {
       if (ev.participants === undefined) {
         ev.participants = [];

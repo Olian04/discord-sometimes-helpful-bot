@@ -1,29 +1,13 @@
 import { commander } from '@/commander';
 import { config } from '@/config';
-import * as archiveMarkedMessages from '@/reactions/archiveMarkedEvent';
-import * as createEventMessage from '@/reactions/createNewEvent';
-import * as keepConfigUpdated from '@/reactions/keepConfigUpdated';
-import * as markForArchivationDeletedEvents from '@/reactions/markForArchivationDeletedEvents';
-import * as resurrectEventsOnStartup from '@/reactions/resurrectEventsOnStartup';
 import { logger } from '@/util/logger';
 import { Client, Message } from 'discord.js';
+import registerReactions from './registerReactions';
 import { deleteIfAble } from './util/command';
-
-const reactions = [
-  keepConfigUpdated,
-  markForArchivationDeletedEvents,
-  archiveMarkedMessages,
-  resurrectEventsOnStartup,
-  createEventMessage,
-];
 
 const client = new Client();
 
-client.on('ready', () => {
-  client.guilds.forEach((guild) => {
-    reactions.forEach(({ setup }) => setup(guild));
-  });
-});
+registerReactions(client);
 
 client.on('message', (message: Message) => {
   if (message.guild === null) {

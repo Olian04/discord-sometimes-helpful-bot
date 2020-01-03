@@ -7,6 +7,7 @@ const defaultChannelConfig: () => IChannelConfig = () => ({
   isCommandOnly: false,
   allowCommand_emote: true,
   allowCommand_event: false,
+  allowCommand_poll: false,
 });
 
 const constructConfigObject = (conf: DeepPartial<IGuildConfig>): IGuildConfig => ({

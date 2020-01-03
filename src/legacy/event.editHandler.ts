@@ -4,13 +4,13 @@
 import { logger } from '@/util/logger';
 logger.warn.app(`Loaded legacy module: event.editHandler.ts`);
 
-import { IParticipant } from '@/interfaces/participant.interface';
+import { IEventParticipant } from '@/interfaces/eventParticipant.interface';
 import { Message, MessageReaction } from 'discord.js';
 
 // from './consts'
 interface IEditHandlerArguments {
   title: string;
-  participants: IParticipant[];
+  participants: IEventParticipant[];
   eventMessage: Message;
   reaction: MessageReaction;
 }

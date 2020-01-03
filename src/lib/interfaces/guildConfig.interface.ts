@@ -9,4 +9,5 @@ export interface IChannelConfig {
   isCommandOnly: boolean;
   allowCommand_event: boolean;
   allowCommand_emote: boolean;
+  allowCommand_poll: boolean;
 }

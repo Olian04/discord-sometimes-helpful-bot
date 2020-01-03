@@ -1,9 +1,9 @@
-import { IParticipant } from '@/interfaces/participant.interface';
+import { IEventParticipant } from '@/interfaces/eventParticipant.interface';
 import { emoji } from 'node-emoji';
 
 export const constructEventMessage = (
   title: string,
-  participants: Array<Pick<IParticipant, 'attendance' | 'timestamp' | 'nickname'>>,
+  participants: Array<Pick<IEventParticipant, 'attendance' | 'timestamp' | 'nickname'>>,
   ) => {
   const participants_yes = participants
     .filter(({ attendance }) => attendance === 'yes')

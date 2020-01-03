@@ -2,7 +2,7 @@ import { config } from '@/config';
 import { db } from '@/database';
 import { IChannelConfig } from '@/interfaces/guildConfig.interface';
 import { logger } from '@/util/logger';
-import { DynamicMessage, OnReaction } from 'discord-dynamic-messages';
+import { DynamicMessage, OnReaction, OnReactionRemoved } from 'discord-dynamic-messages';
 import { emoji } from 'node-emoji';
 
 // IMPORTANT NOTE: This config solution is only temporary,
@@ -31,6 +31,7 @@ export class ChannelConfig extends DynamicMessage {
   @OnReaction(':one:', {
     removeWhenDone: false,
   })
+  @OnReactionRemoved(':one:')
   public toggleIsCommandOnly() {
     if (this.isSubmitted || this.hasTimedOut) { return; }
     this.configCache.isCommandOnly = !this.configCache.isCommandOnly;
@@ -39,6 +40,7 @@ export class ChannelConfig extends DynamicMessage {
   @OnReaction(':two:', {
     removeWhenDone: false,
   })
+  @OnReactionRemoved(':two:')
   public toggleAllowCommandEmote() {
     if (this.isSubmitted || this.hasTimedOut) { return; }
     this.configCache.allowCommand_emote = !this.configCache.allowCommand_emote;
@@ -47,9 +49,19 @@ export class ChannelConfig extends DynamicMessage {
   @OnReaction(':three:', {
     removeWhenDone: false,
   })
+  @OnReactionRemoved(':three:')
   public toggleAllowCommandEvent() {
     if (this.isSubmitted || this.hasTimedOut) { return; }
     this.configCache.allowCommand_event = !this.configCache.allowCommand_event;
+  }
+
+  @OnReaction(':four:', {
+    removeWhenDone: false,
+  })
+  @OnReactionRemoved(':four:')
+  public toggleAllowCommandPoll() {
+    if (this.isSubmitted || this.hasTimedOut) { return; }
+    this.configCache.allowCommand_poll = !this.configCache.allowCommand_poll;
   }
 
   @OnReaction(':floppy_disk:', {
@@ -94,8 +106,9 @@ export class ChannelConfig extends DynamicMessage {
 Current config (with queued changes):
 \`\`\`diff
 ${this.configCache.isCommandOnly ? '+' : '-'} [1] isCommandOnly
-${this.configCache.allowCommand_emote ? '+' : '-'} [1] allowCommand_emote
-${this.configCache.allowCommand_event ? '+' : '-'} [1] allowCommand_event
+${this.configCache.allowCommand_emote ? '+' : '-'} [2] allowCommand_emote
+${this.configCache.allowCommand_event ? '+' : '-'} [3] allowCommand_event
+${this.configCache.allowCommand_poll ? '+' : '-'} [4] allowCommand_poll
 \`\`\`
 Queue a toggle change by reacting with the associated number.
 Submit all queued changes by reacting with ${emoji.floppy_disk}

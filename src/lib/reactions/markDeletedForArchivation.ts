@@ -16,5 +16,14 @@ export const setup = (guild: Guild) => {
         status: 'toBeArchived',
       });
     });
+
+    db(guild.id).poll.getPollID(message.id, (maybePollID) => {
+      if (! maybePollID) {
+        return;
+      }
+      db(guild.id).event.update(maybePollID, {
+        status: 'toBeArchived',
+      });
+    });
   });
 };

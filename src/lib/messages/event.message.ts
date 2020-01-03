@@ -1,7 +1,7 @@
 import { legacyEditHandler } from '@/../legacy/event.editHandler';
 import { db } from '@/database';
 import { IEvent } from '@/interfaces/event.interface';
-import { Attendance } from '@/interfaces/participant.interface';
+import { Attendance } from '@/interfaces/eventParticipant.interface';
 import { constructEventMessage } from '@/messages/event.helpers/messageConstructor';
 import { logger } from '@/util/logger';
 import { DynamicMessage, OnReaction } from 'discord-dynamic-messages';

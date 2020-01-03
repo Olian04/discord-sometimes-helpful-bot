@@ -1,4 +1,5 @@
 # discord-sometimes-helpful-bot
+
 A discord chat bot that provides tools for organizing and managing events.
 
 ## `!event [title]`
@@ -7,6 +8,13 @@ State that you are planning an event, then ppl may react with :thumbsup: / :thum
 Reacting with a :wrench: will alow you to change the title of the event. The bot the sends a DM to the user providing further instructions.
 
 ![](assets/event2.png)
+
+## `!poll [title]; [voteOption1]; [voteOption2]; ...[voteOptionN];`
+
+Starts a poll with the specified title, that allows users to vote on one or more of the provided vote options.
+The title & each vote option must end with a semicolon.
+
+Ex: `!poll This is a demo poll!; Option 1; Option 2; Option 3;`
 
 ## `!emote [emoteName]`
 

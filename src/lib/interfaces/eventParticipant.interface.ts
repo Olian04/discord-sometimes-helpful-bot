@@ -1,6 +1,6 @@
 export type Attendance =  'yes' | 'no' | 'maybe';
 
-export interface IParticipant {
+export interface IEventParticipant {
   userID: string;
   nickname: string;
   attendance: Attendance;
