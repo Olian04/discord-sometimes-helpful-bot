@@ -28,6 +28,6 @@ export const setup = (guild: Guild) =>  {
       status: 'archived',
       messageID: null,
     });
-    logger.log.reaction(`Archived event: ${poll.title}`);
+    logger.log.reaction(`Archived poll: ${poll.title}`);
   });
 };

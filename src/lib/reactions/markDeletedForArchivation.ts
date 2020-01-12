@@ -8,6 +8,7 @@ export const setup = (guild: Guild) => {
       return;
     }
 
+    // Events
     db(guild.id).event.getEventID(message.id, (maybeEventID) => {
       if (! maybeEventID) {
         return;
@@ -17,11 +18,12 @@ export const setup = (guild: Guild) => {
       });
     });
 
+    // Polls
     db(guild.id).poll.getPollID(message.id, (maybePollID) => {
       if (! maybePollID) {
         return;
       }
-      db(guild.id).event.update(maybePollID, {
+      db(guild.id).poll.update(maybePollID, {
         status: 'toBeArchived',
       });
     });

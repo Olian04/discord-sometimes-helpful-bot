@@ -1,5 +1,4 @@
 import { Reference } from '@/database';
-import { IEventParticipant } from '@/interfaces/eventParticipant.interface';
 import { IPoll } from '@/interfaces/poll.interface';
 import { IPollParticipant } from '@/interfaces/pollParticipant.interface';
 import uuid4 from 'uuid/v4';
