@@ -1,7 +1,8 @@
-import { args, discord_token, firebase_config } from '@/preStartConfig';
+import { args, firebase_config } from '@/preStartConfig';
 import { Record } from '@/util/record';
 import { LogLevels } from 'discord-commander';
 import * as path from 'path';
+import { app } from './database';
 import { IChannelConfig, IGuildConfig } from './interfaces/guildConfig.interface';
 
 class Config extends Record<Config> {
@@ -14,7 +15,7 @@ class Config extends Record<Config> {
   };
   public secret: {
     firebase: typeof firebase_config;
-    discord: string;
+    discord: Promise<string>;
   };
   public guildConfigs: { [guildID: string]: IGuildConfig };
   public assetsRoot: string;
@@ -30,7 +31,16 @@ export const config = new Config({
   },
   secret: {
     firebase: firebase_config,
-    discord: discord_token,
+    discord: new Promise((resolve, reject) => {
+      app.database().ref('secrets').child('discord').child(args.env).once('value', (snap) => {
+        const secret = snap.val();
+        if (secret) {
+          resolve(secret);
+        } else {
+          reject();
+        }
+      });
+    }),
   },
   guildConfigs: {},
   assetsRoot: path.join(__dirname, '..', '..', 'assets'),

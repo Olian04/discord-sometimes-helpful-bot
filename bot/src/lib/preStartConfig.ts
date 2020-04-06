@@ -4,6 +4,7 @@ betterLogging(console, {
 });
 
 import path from 'path';
+import { IFirebaseServiceAccount } from './interfaces/firebaseServiceAccount.interface';
 
 const args: {
   env?: 'production' | 'development';
@@ -25,16 +26,11 @@ if ((args.env === 'development') || args.verbose) {
 }
 
 // tslint:disable-next-line no-var-requires
-const secrets = require(path.resolve(__dirname, '..', '..', 'secrets.json'));
-
-const discord_token: string = secrets.discord_token;
-const firebase_config: {
-  project_id: string;
-  [key: string]: string;
-} = secrets.firebaseConfig;
+const firebase_config = require(
+  path.resolve(__dirname, '..', '..', 'firebaseServiceAccount.json'),
+) as IFirebaseServiceAccount;
 
 export {
   args,
-  discord_token,
   firebase_config,
 };

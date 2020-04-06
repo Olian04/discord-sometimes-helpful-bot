@@ -31,9 +31,12 @@ client.on('message', (message: Message) => {
   commander.handleMessage('new', message);
 });
 
-client.login(config.secret.discord)
-  .then(() => logger.info.app(`Login successful`))
-  .catch((err) => {
-    logger.error.app(`Login failed`);
-    throw err;
-  });
+(async () => {
+  const secret = await config.secret.discord;
+  client.login(secret)
+    .then(() => logger.info.app(`Login successful`))
+    .catch((err) => {
+      logger.error.app(`Login failed`);
+      throw err;
+    });
+})();

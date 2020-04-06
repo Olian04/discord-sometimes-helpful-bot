@@ -7,7 +7,7 @@ import { pollModelFactory } from './models/poll.model';
 
 export type Reference = firebase.database.Reference;
 
-const app = firebase.initializeApp({
+export const app = firebase.initializeApp({
   credential: firebase.credential.cert(firebase_config as firebase.ServiceAccount),
   databaseURL: `https://${firebase_config.project_id}.firebaseio.com`,
 });
