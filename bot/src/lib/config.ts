@@ -1,8 +1,8 @@
 import { args, firebase_config } from '@/preStartConfig';
-import { Record } from '@/util/record';
+import { Record } from '@olian/typescript-helpers';
 import { LogLevels } from 'discord-commander';
 import * as path from 'path';
-import { app } from './database';
+import { _database } from './database';
 import { IChannelConfig, IGuildConfig } from './interfaces/guildConfig.interface';
 
 class Config extends Record<Config> {
@@ -32,7 +32,7 @@ export const config = new Config({
   secret: {
     firebase: firebase_config,
     discord: new Promise((resolve, reject) => {
-      app.database().ref('secrets').child('discord').child(args.env).once('value', (snap) => {
+      _database.database().ref('secrets').child('discord').child(args.env).once('value', (snap) => {
         const secret = snap.val();
         if (secret) {
           resolve(secret);

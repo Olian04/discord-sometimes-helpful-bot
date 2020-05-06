@@ -22,7 +22,7 @@ const args: {
 
 if ((args.env === 'development') || args.verbose) {
   // enable debug output
-  console.loglevel = 4;
+  console.logLevel = 4;
 }
 
 // tslint:disable-next-line no-var-requires

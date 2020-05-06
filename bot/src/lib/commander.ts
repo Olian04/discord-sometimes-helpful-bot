@@ -1,15 +1,9 @@
 import { EventCommand } from '@/commands/event.command';
 import { config } from '@/config';
 import { Commander } from 'discord-commander';
-import { ConfigCommand } from './commands/config.command';
-import { LargeEmoteCommand } from './commands/largeEmote.command';
-import { PollCommand } from './commands/poll.command';
 
 export const commander = new Commander(config.commander.prefix, [
   EventCommand,
-  LargeEmoteCommand,
-  ConfigCommand,
-  PollCommand,
 ]);
 
 // Apply config

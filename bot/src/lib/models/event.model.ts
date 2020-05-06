@@ -1,7 +1,7 @@
 import { Reference } from '@/database';
 import { IEvent } from '@/interfaces/event.interface';
 import { IEventParticipant } from '@/interfaces/eventParticipant.interface';
-import uuid4 from 'uuid/v4';
+import { v4 as uuid4 } from 'uuid';
 
 const constructEvent = (ev: IEvent): IEvent => ({
   participants: [], // participants wont get stored in the DB if the array is empty. (apparently)
@@ -9,25 +9,28 @@ const constructEvent = (ev: IEvent): IEvent => ({
 });
 
 export const eventModelFactory = (guildRef: Reference) => ({
-  getEventID: (messageID: string, cb: (maybeEventID: string | null) => void) => guildRef
-    .child('events').on('value', (snap) => {
+  getEvent: (messageID: string) => new Promise<{ id: string; data: IEvent; }>((resolve, reject) =>  {
+    guildRef.child('events').on('value', (snap) => {
       const snapVal = snap.val() || {};
-      const events = Object.keys(snapVal).map((k) => ({id: k, data: snapVal[k]})) as Array<{id: string, data: IEvent}>;
+      const events = Object.keys(snapVal).map((k) => ({id: k, data: snapVal[k]})) as {id: string, data: IEvent}[];
       const maybeEvent = events.find((ev) => ev.data.messageID === messageID);
-      cb(maybeEvent ? maybeEvent.id : null);
-    }),
+
+      if (maybeEvent) resolve(maybeEvent);
+      else reject();
+    });
+  }),
 
   createNewEvent: (event: Pick<IEvent, 'channelID' | 'guildID' | 'title'>) => {
-    const id = uuid4();
+    const eventID = uuid4();
     const newEvent: IEvent = {
       ...event,
       participants: [],
       status: 'new',
       messageID: null,
-      id,
+      eventID,
     };
-    guildRef.child('events').child(id).set(newEvent);
-    return id;
+    guildRef.child('events').child(eventID).set(newEvent);
+    return eventID;
   },
 
   updateAttendance: (
@@ -53,37 +56,5 @@ export const eventModelFactory = (guildRef: Reference) => ({
     }),
 
   update: (eventID: string, fieldsToUpdate: Partial<Pick<IEvent, 'status' | 'title' | 'messageID'>>) => guildRef
-    .child('events').child(eventID).transaction((ev: IEvent) => {
-      Object.assign(ev, fieldsToUpdate);
-      return ev;
-    }),
-
-  onNewEvent: (cb: (event: IEvent) => void) => guildRef
-    .child('events').on('child_added', (snap) => {
-      const event: IEvent = constructEvent(snap.val());
-      if (event.status === 'new') {
-        cb(event);
-      }
-    }),
-
-  onEventChange: (eventID: string, cb: (event: IEvent) => void) => guildRef
-    .child('events').child(eventID).on('value', (snap) => {
-      const event: IEvent = constructEvent(snap.val());
-      cb(event);
-    }),
-
-  oncePerEvent: (cb: (event: IEvent) => void) => guildRef
-    .child('events').once('value', (snap) => {
-      const snapVal =  snap.val() || {};
-      const events = Object.keys(snapVal).map((k) => snapVal[k]) as IEvent[];
-      events.forEach((event) => {
-        cb(event);
-      });
-    }),
-
-  onAnyEventChanged: (cb: (event: IEvent) => void) => guildRef
-  .child('events').on('child_changed', (snap) => {
-    const event: IEvent = constructEvent(snap.val());
-    cb(event);
-  }),
+    .child('events').child(eventID).update(fieldsToUpdate),
 });
