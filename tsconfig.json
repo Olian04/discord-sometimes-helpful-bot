@@ -3,12 +3,8 @@
       "target": "es6",
       "module": "commonjs",
       "lib": [
-          "esnext",
+          "esnext"
       ],
-      "baseUrl": "src/lib",
-      "paths": {
-        "@/*": ["*"],
-      },
       "outDir": "dist/",
       "declaration": true,
       "sourceMap": true,
@@ -18,7 +14,7 @@
       "noImplicitThis": true,
       "experimentalDecorators": true,
       "emitDecoratorMetadata": true,
-      "skipLibCheck": true,
+      "skipLibCheck": true
   },
   "include": [
       "src/**/*.ts"
