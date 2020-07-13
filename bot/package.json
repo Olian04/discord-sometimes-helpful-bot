@@ -3,8 +3,8 @@
   "private": true,
   "main": "dist/index.js",
   "scripts": {
-    "start:prod": "node dist/index.js env=production",
-    "start:dev": "node dist/index.js env=development",
+    "start:prod": "node dist/index.js",
+    "start:dev": "node dist/index.js",
     "start": "npm run start:dev",
     "build": "rm -rf dist && tsc",
     "lint": "tslint --fix -c ./tslint.json 'src/**/*{.ts,.tsx}'",
@@ -22,23 +22,17 @@
     "url": "https://github.com/Olian04/discord-raid-bot/issues"
   },
   "homepage": "https://github.com/Olian04/discord-raid-bot#readme",
-  "_moduleAliases": {
-    "@": "dist/lib/"
-  },
   "dependencies": {
     "@olian/typescript-helpers": "^2.2.1",
-    "@types/module-alias": "^2.0.0",
     "@types/node": "^13.13.5",
-    "@types/uuid": "^7.0.3",
+    "@types/node-emoji": "^1.8.1",
     "better-logging": "^4.3.0",
-    "discord-commander": "^1.0.1",
     "discord.js": "^12.2.0",
+    "dotenv": "^8.2.0",
     "firebase-admin": "^8.11.0",
-    "module-alias": "^2.2.2",
-    "node-fetch": "^2.6.0",
+    "node-emoji": "^1.10.0",
     "ts-node": "^8.10.1",
     "tslint": "^6.1.2",
-    "typescript": "^3.8.3",
-    "uuid": "^8.0.0"
+    "typescript": "^3.8.3"
   }
 }
