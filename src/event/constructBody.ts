@@ -1,6 +1,8 @@
 import { emoji } from 'node-emoji';
 import { Participant } from '../interfaces/Participant';
 
+const emptySpacePlaceholder = '\t';
+
 export const constructBody = (
   title: string,
   participants: Participant[],
@@ -32,7 +34,7 @@ export const constructBody = (
   return `**[event]** ${title}
 Participants:
 \`\`\`diff
-${display_participants.join('\n')}
+${display_participants.join('\n') || emptySpacePlaceholder}
 \`\`\`` +
 `React with ${emoji.thumbsup} if you can attend, ` +
 `${emoji.thumbsdown} if you can't attend, ` +
