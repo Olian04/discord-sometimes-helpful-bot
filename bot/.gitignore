@@ -61,4 +61,4 @@ typings/
 .next
 
 firebaseServiceAccount.json
-dist/*
+dist
