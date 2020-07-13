@@ -1,18 +1,16 @@
 {
-  "version": "2.0.0",
+  "version": "4.0.0",
   "private": true,
   "main": "dist/index.js",
   "scripts": {
-    "start:prod": "node dist/index.js env=production",
-    "start:dev": "node dist/index.js env=development",
+    "start:prod": "node dist/index.js",
+    "start:dev": "node dist/index.js",
     "start": "npm run start:dev",
     "build": "rm -rf dist && tsc",
-    "test": "mocha --recursive -r ts-node/register 'tests/**/*.test.ts' ",
     "lint": "tslint --fix -c ./tslint.json 'src/**/*{.ts,.tsx}'",
     "lint:nofix": "tslint -c ./tslint.json 'src/**/*{.ts,.tsx}'",
-    "prestart:prod": "npm run build",
-    "prestart:dev": "npm run lint && npm run build",
-    "prebuild": "npm run lint:nofix && npm run test"
+    "prestart:prod": "npm run lint:nofix && npm run build",
+    "prestart:dev": "npm run lint && npm run build"
   },
   "repository": {
     "type": "git",
@@ -24,31 +22,17 @@
     "url": "https://github.com/Olian04/discord-raid-bot/issues"
   },
   "homepage": "https://github.com/Olian04/discord-raid-bot#readme",
-  "_moduleAliases": {
-    "@": "dist/lib/"
-  },
   "dependencies": {
-    "@types/chai": "^4.2.7",
-    "@types/es6-promise": "3.3.0",
-    "@types/mocha": "^5.2.7",
-    "@types/module-alias": "^2.0.0",
-    "@types/node": "^13.1.2",
-    "@types/node-fetch": "^2.5.4",
-    "@types/sqlite3": "^3.1.6",
-    "@types/typescript": "^2.0.0",
-    "@types/uuid": "^3.4.6",
-    "better-logging": "^3.5.0",
-    "chai": "^4.2.0",
-    "discord-commander": "^0.6.1",
-    "discord-dynamic-messages": "^3.2.0",
-    "discord.js": "^11.5.1",
-    "firebase-admin": "^8.9.0",
-    "mocha": "^6.2.2",
-    "module-alias": "^2.2.2",
-    "node-fetch": "^2.6.0",
-    "ts-node": "^8.5.4",
-    "tslint": "^5.20.1",
-    "typescript": "^3.7.4",
-    "uuid": "^3.3.3"
+    "@olian/typescript-helpers": "^2.2.1",
+    "@types/node": "^13.13.5",
+    "@types/node-emoji": "^1.8.1",
+    "better-logging": "^4.3.0",
+    "discord.js": "^12.2.0",
+    "dotenv": "^8.2.0",
+    "firebase-admin": "^8.11.0",
+    "node-emoji": "^1.10.0",
+    "ts-node": "^8.10.1",
+    "tslint": "^6.1.2",
+    "typescript": "^3.8.3"
   }
 }

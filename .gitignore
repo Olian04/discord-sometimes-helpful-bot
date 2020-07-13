@@ -60,7 +60,5 @@ typings/
 # next.js build output
 .next
 
-secrets.json
-dist/*
-
-*.db
+firebaseServiceAccount.json
+dist
