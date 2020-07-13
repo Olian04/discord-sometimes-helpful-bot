@@ -1,12 +1,13 @@
 import './setup';
+
 import { Client } from 'discord.js';
+import { emoji } from 'node-emoji';
 import { db, getSnap } from './database';
 import { attachReactions, constructBody } from './event';
-import { emoji } from 'node-emoji';
 import { Event } from './interfaces/Event';
 
 const app = new Client({
-  partials: ['MESSAGE', 'CHANNEL', 'REACTION']
+  partials: ['MESSAGE', 'CHANNEL', 'REACTION'],
 });
 
 const reactionMap = {
@@ -35,18 +36,18 @@ app.on('rateLimit', (data)  => {
 });
 
 app.on('message', async (message) => {
-  if (message.channel.type !== 'text') return;
-  if (! message.content.startsWith('!event ')) return;
+  if (message.channel.type !== 'text') { return; }
+  if (! message.content.startsWith('!event ')) { return; }
   const title =  message.content.substring('!event '.length);
 
   const eventMessage = await message.channel.send(
-    constructBody(title, [])
-  ).then(val => {
+    constructBody(title, []),
+  ).then((val) => {
     console.log(`Sent event message to discord: ${title}`);
     return val;
   }).catch(console.warn);
 
-  if (! eventMessage) return;
+  if (! eventMessage) { return; }
 
   attachReactions(eventMessage)
     .then(() => `Attached reactions to event message: ${title}`);
@@ -63,26 +64,26 @@ app.on('message', async (message) => {
 });
 
 app.on('messageReactionAdd', async (_reaction) => {
-  if (_reaction.partial) await _reaction.fetch();
-  if (_reaction.message.partial) await _reaction.message.fetch();
+  if (_reaction.partial) { await _reaction.fetch(); }
+  if (_reaction.message.partial) { await _reaction.message.fetch(); }
 
-  if (_reaction.message.channel.type !== 'text') return;
-  if (_reaction.message.author.id !== app.user.id) return;
+  if (_reaction.message.channel.type !== 'text') { return; }
+  if (_reaction.message.author.id !== app.user.id) { return; }
 
   const message = _reaction.message;
   const reactions = _reaction.message.reactions.cache;
 
   await Promise.all(
     reactions.map(async (reaction) => {
-      if (reaction.partial) await reaction.fetch();
-      if (! (reaction.emoji.name in reactionMap)) return Promise.resolve();
+      if (reaction.partial) { await reaction.fetch(); }
+      if (! (reaction.emoji.name in reactionMap)) { return Promise.resolve(); }
 
       const status = reactionMap[reaction.emoji.name];
       const users = await reaction.users.fetch();
 
       return Promise.all(
         users.map((user) => {
-          if (user.bot) return Promise.resolve();
+          if (user.bot) { return Promise.resolve(); }
           reaction.users.remove(user)
             .catch(console.warn);
 
@@ -91,9 +92,9 @@ app.on('messageReactionAdd', async (_reaction) => {
             status,
             lastUpdated: Date.now(),
           }).catch(console.warn);
-        })
+        }),
         );
-    })
+    }),
   );
 
   const event = (await getSnap(`event/${message.id}`)).toJSON() as Event;
@@ -113,10 +114,10 @@ app.on('messageReactionAdd', async (_reaction) => {
 });
 
 app.on('messageDelete', async (message) => {
-  if (message.partial) await message.fetch();
+  if (message.partial) { await message.fetch(); }
 
-  if (message.channel.type !== 'text') return;
-  if (message.author.id !== app.user.id) return;
+  if (message.channel.type !== 'text') { return; }
+  if (message.author.id !== app.user.id) { return; }
 
   db.child(`event/${message.id}`).remove()
     .then(()  => console.log(`Deleted event from db: (id) ${message.id}`))
