@@ -5,6 +5,7 @@ import { emoji } from 'node-emoji';
 import { db, getSnap } from './database';
 import { attachReactions, constructBody, runEditSequence } from './event';
 import { Event } from './interfaces/Event';
+import { stat } from 'fs';
 
 const app = new Client({
   partials: ['MESSAGE', 'CHANNEL', 'REACTION'],
@@ -95,6 +96,8 @@ app.on('messageReactionAdd', async (_reaction) => {
 
       if (! users) { return; }
 
+      const { title: eventTitle } = (await getSnap(`event/${message.id}`)).toJSON() as Event;
+
       return Promise.all(
         users.map((user) => {
           if (user.bot) { return Promise.resolve(); }
@@ -106,11 +109,13 @@ app.on('messageReactionAdd', async (_reaction) => {
             return Promise.resolve();
           }
 
+          const nickName = reaction.message.guild.member(user).displayName;
           return db.child(`event/${reaction.message.id}/participant/${user.id}`).set({
-            name: reaction.message.guild.member(user).displayName,
+            name: nickName,
             status,
             lastUpdated: Date.now(),
-          }).catch(console.warn);
+          }).then(() => console.log(`Participation on event "${eventTitle}" for user  "${nickName}" set to "${status}"`))
+            .catch(console.warn);
         }),
         );
     }),
