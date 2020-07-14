@@ -3,7 +3,7 @@ import './setup';
 import { Client } from 'discord.js';
 import { emoji } from 'node-emoji';
 import { db, getSnap } from './database';
-import { attachReactions, constructBody } from './event';
+import { attachReactions, constructBody, runEditSequence } from './event';
 import { Event } from './interfaces/Event';
 
 const app = new Client({
@@ -14,6 +14,7 @@ const reactionMap = {
   [emoji.thumbsup]: 'yes',
   [emoji.thumbsdown]: 'no',
   [emoji.grey_question]: 'maybe',
+  [emoji.wrench]: 'start_edit_session',
 };
 
 app.on('ready', ()  => {
@@ -92,6 +93,11 @@ app.on('messageReactionAdd', async (_reaction) => {
           if (user.bot) { return Promise.resolve(); }
           reaction.users.remove(user)
             .catch(console.warn);
+
+          if (status === 'start_edit_session') {
+            runEditSequence(_reaction.message, user);
+            return Promise.resolve();
+          }
 
           return db.child(`event/${reaction.message.id}/participant/${user.id}`).set({
             name: reaction.message.guild.member(user).displayName,
