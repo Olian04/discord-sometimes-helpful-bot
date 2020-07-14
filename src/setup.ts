@@ -14,3 +14,6 @@ else console.info(`Environment variables configured`);
 
 // Enable debug logging if in development mode
 console.logLevel = process.env.DEPLOY_ENVIRONMENT === 'development' ? 4 : 3;
+
+process.on('uncaughtExceptionMonitor', console.error);
+process.on('beforeExit', (exitCode) => console.info(`Process exiting with exit code: ${exitCode}`));
