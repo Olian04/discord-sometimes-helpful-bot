@@ -7,6 +7,11 @@ import { attachReactions, constructBody, runEditSequence } from './event';
 import { Event } from './interfaces/Event';
 
 const app = new Client({
+  /*
+  Partials makes the client auto cache the ID of messages, channels, and reactions
+  made before the bot started.
+  This will also fire events for partials that haven't yet been processed by the bot.
+  */
   partials: ['MESSAGE', 'CHANNEL', 'REACTION'],
 });
 
@@ -14,7 +19,7 @@ const reactionMap = {
   [emoji.thumbsup]: 'yes',
   [emoji.thumbsdown]: 'no',
   [emoji.grey_question]: 'maybe',
-  [emoji.wrench]: 'start_edit_session',
+  [emoji.wrench]: 'start_edit_session', // This is a workaround that allows me to reuse excising logic.
 };
 
 app.on('ready', ()  => {
@@ -95,6 +100,8 @@ app.on('messageReactionAdd', async (_reaction) => {
 
       if (! users) { return; }
 
+      const { title: eventTitle } = (await getSnap(`event/${message.id}`)).toJSON() as Event;
+
       return Promise.all(
         users.map((user) => {
           if (user.bot) { return Promise.resolve(); }
@@ -106,11 +113,13 @@ app.on('messageReactionAdd', async (_reaction) => {
             return Promise.resolve();
           }
 
+          const nickName = reaction.message.guild.member(user).displayName;
           return db.child(`event/${reaction.message.id}/participant/${user.id}`).set({
-            name: reaction.message.guild.member(user).displayName,
+            name: nickName,
             status,
             lastUpdated: Date.now(),
-          }).catch(console.warn);
+          }).then(() => console.log(`Participation on event "${eventTitle}" for user  "${nickName}" set to "${status}"`))
+            .catch(console.warn);
         }),
         );
     }),

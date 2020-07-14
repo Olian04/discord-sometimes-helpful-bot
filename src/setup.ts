@@ -6,7 +6,15 @@ const err = dotenv.config().error;
 
 // Setting up logging library
 betterLogging(console, {
-  format: (ctx) => `${ctx.date} ${ctx.time24} ${ctx.type} ${ctx.msg}`,
+  format: (ctx) => [
+    ctx.STAMP(process.env.DATABASE_VERSION),
+    ctx.STAMP(process.env.DEPLOY_ENVIRONMENT),
+    ctx.date,
+    ctx.time24,
+    ctx.type,
+    ' ',
+    ctx.msg
+  ].join(''),
 });
 
 if (err) console.error(`An error occurred when configuring environment variables: ${err}`);
