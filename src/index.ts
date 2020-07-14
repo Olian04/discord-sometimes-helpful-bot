@@ -75,11 +75,17 @@ app.on('messageReactionAdd', async (_reaction) => {
 
   await Promise.all(
     reactions.map(async (reaction) => {
-      if (reaction.partial) { await reaction.fetch(); }
+      if (reaction.partial) {
+        await reaction.fetch()
+          .catch(console.warn);
+      }
       if (! (reaction.emoji.name in reactionMap)) { return Promise.resolve(); }
 
       const status = reactionMap[reaction.emoji.name];
-      const users = await reaction.users.fetch();
+      const users = await reaction.users.fetch()
+        .catch(console.warn);
+
+      if (! users) { return; }
 
       return Promise.all(
         users.map((user) => {
