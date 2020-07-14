@@ -5,7 +5,6 @@ import { emoji } from 'node-emoji';
 import { db, getSnap } from './database';
 import { attachReactions, constructBody, runEditSequence } from './event';
 import { Event } from './interfaces/Event';
-import { stat } from 'fs';
 
 const app = new Client({
   partials: ['MESSAGE', 'CHANNEL', 'REACTION'],
