@@ -72,6 +72,13 @@ app.on('messageReactionAdd', async (_reaction) => {
   if (_reaction.message.author.id !== app.user.id) { return; }
 
   const message = _reaction.message;
+
+  if (! (await getSnap(`event/${_reaction.message.id}`)).exists()) {
+    // This message was sent by the bot, but its no an event message.
+    // This message was probably sent by en earlier version of the bot.
+    return;
+  }
+
   const reactions = _reaction.message.reactions.cache;
 
   await Promise.all(
