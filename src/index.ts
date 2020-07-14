@@ -7,6 +7,11 @@ import { attachReactions, constructBody, runEditSequence } from './event';
 import { Event } from './interfaces/Event';
 
 const app = new Client({
+  /*
+  Partials makes the client auto cache the ID of messages, channels, and reactions
+  made before the bot started.
+  This will also fire events for partials that haven't yet been processed by the bot.
+  */
   partials: ['MESSAGE', 'CHANNEL', 'REACTION'],
 });
 
@@ -14,7 +19,7 @@ const reactionMap = {
   [emoji.thumbsup]: 'yes',
   [emoji.thumbsdown]: 'no',
   [emoji.grey_question]: 'maybe',
-  [emoji.wrench]: 'start_edit_session',
+  [emoji.wrench]: 'start_edit_session', // This is a workaround that allows me to reuse excising logic.
 };
 
 app.on('ready', ()  => {
