@@ -7,7 +7,7 @@ A discord chat bot that provides tools for organizing and managing events.
 State that you are planning an event, then ppl may react with :thumbsup: / :thumbsdown: or :grey_question: depending on if they plan to attend or not. The event comment will update with a list of the ppl who have responded & in the order they responded.
 Reacting with a :wrench: will alow you to change the title of the event. The bot the sends a DM to the user providing further instructions.
 
-![](assets/event2.png)
+![](assets/better_logging_event_demo.png)
 
 ## Prerequisite
 
