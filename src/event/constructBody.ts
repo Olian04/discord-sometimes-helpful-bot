@@ -31,8 +31,14 @@ export const constructBody = (
     ...participants_maybe,
   ];
 
+  const display_participants_summary = [
+    participants_yes.length > 0 ? `${emoji.thumbsup} x ${participants_yes.length}` : '',
+    participants_no.length > 0 ? `${emoji.thumbsdown} x ${participants_no.length}` : '',
+    participants_maybe.length > 0 ? `${emoji.grey_question} x ${participants_maybe.length}` : ''
+  ].filter(s => s.length > 0);
+
   return `**[event]** ${title}
-Participants:
+Participants: ${display_participants_summary.length > 0 ? `(${display_participants_summary.join(', ')})` : ''}
 \`\`\`diff
 ${display_participants.join('\n') || emptySpacePlaceholder}
 \`\`\`` +
