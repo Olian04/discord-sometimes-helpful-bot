@@ -2,6 +2,7 @@ import './setup';
 
 import { Client } from 'discord.js';
 import * as eventModule from './modules/event';
+import * as configModule from './modules/config';
 
 const app = new Client({
   /*
@@ -32,6 +33,7 @@ app.on('rateLimit', (data)  => {
 });
 
 // Setting up modules
+configModule.setup(app);
 eventModule.setup(app);
 
 // Login
