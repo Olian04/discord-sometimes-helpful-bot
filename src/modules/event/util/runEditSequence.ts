@@ -1,5 +1,5 @@
 import { Message, User } from 'discord.js';
-import { db, getSnap } from '../database';
+import { db, getSnap } from '../../../database';
 import { Event } from '../interfaces/Event';
 import { constructBody } from './constructBody';
 
