@@ -55,6 +55,10 @@ Ex: \`!title This is the new title!\`
     title: newTitle,
   });
   endEditSequence(`Title successfully changed.`);
-  message.edit(constructBody(newTitle, Object.values(event.participant || {})))
+
+  // Synchronize with changes made by other users while the edit sequence was running
+  // For example: A using changing their signup status
+  const eventData = (await getSnap(`event/${message.id}`)).val() as Event;
+  message.edit(constructBody(eventData.title, Object.values(eventData.participant || {})))
     .catch(console.warn);
 };
