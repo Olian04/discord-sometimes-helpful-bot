@@ -17,7 +17,7 @@ betterLogging(console, {
   ].join(''),
 });
 
-if (err) console.error(`An error occurred when configuring environment variables: ${err}`);
+if (err) console.warn(`An error occurred when configuring environment variables: ${err}`);
 else console.info(`Environment variables configured`);
 
 // Enable debug logging if in development mode
