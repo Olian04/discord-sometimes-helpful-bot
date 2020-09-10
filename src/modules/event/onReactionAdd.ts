@@ -4,6 +4,7 @@ import { Event } from './interfaces/Event';
 import { reactionMap } from './util/reactionMap';
 import { runEditSequence } from './util/runEditSequence';
 import { constructBody } from './util/constructBody';
+import { Participant } from './interfaces/Participant';
 
 export const onReactionAdd = (app: Client) => async (_reaction: MessageReaction) => {
   if (_reaction.partial) { await _reaction.fetch(); }
@@ -39,7 +40,7 @@ export const onReactionAdd = (app: Client) => async (_reaction: MessageReaction)
       const { title: eventTitle } = (await getSnap(`event/${message.id}`)).toJSON() as Event;
 
       return Promise.all(
-        users.map((user) => {
+        users.map(async (user) => {
           if (user.bot) { return Promise.resolve(); }
           reaction.users.remove(user)
             .catch(console.warn);
@@ -55,12 +56,19 @@ export const onReactionAdd = (app: Client) => async (_reaction: MessageReaction)
             return Promise.resolve();
           }
 
-          const nickName = reaction.message.guild.member(user).displayName;
-          return db.child(`event/${reaction.message.id}/participant/${user.id}`).set({
-            name: nickName,
-            status,
-            lastUpdated: Date.now(),
-          }).then(() => console.log(`Participation on event "${eventTitle}" for user  "${nickName}" set to "${status}"`))
+          const participant = (await getSnap(`event/${reaction.message.id}/participant/${user.id}`))
+            .val() as Participant;
+
+          if (participant.status !== status) {
+            participant.status = status as any;
+            participant.lastUpdated = Date.now();
+          }
+          participant.name = reaction.message.guild.member(user).displayName;
+
+          return db.child(`event/${reaction.message.id}/participant/${user.id}`).set(participant)
+            .then(() =>
+              console.log(`Participation on event "${eventTitle}" for user  "${participant.name}" set to "${status}"`)
+            )
             .catch(console.warn);
         }),
         );
