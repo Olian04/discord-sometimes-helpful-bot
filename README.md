@@ -14,7 +14,7 @@ Reacting with a :wrench: will alow you to change the title of the event. The bot
 Will PM you a list of all commands you have access to in the current channel. Buy default this list is empty.<br>
 _**Note:** Admins have access to all commands in all channels._
 
-## `!enable [cmd_name ]`
+## `!enable [cmd_name]`
 
 Will enable a command in the current channel to be used by all members who can send messages in that channel.<br>
 _**Note:** Admins can use all command in all channel, no matter if they are enabled in the channel or not._
