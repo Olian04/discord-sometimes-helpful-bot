@@ -27,6 +27,7 @@ export const onMessage = (app: Client) => async (message: Message) => {
     .then(() => `Attached reactions to event message: ${title}`);
 
   db.child(`event/${eventMessage.id}`).set({
+    authorID: message.author.id,
     title,
     participant: {},
   }).then(() => console.log(`Committed event to db: ${title}`))

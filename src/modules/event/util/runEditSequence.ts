@@ -2,9 +2,11 @@ import { Message, User } from 'discord.js';
 import { db, getSnap } from '../../../database';
 import { Event } from '../interfaces/Event';
 import { constructBody } from './constructBody';
+import { getDirectMessageChannel } from '../../../util/getDirectMessageChannel';
+import { isAdmin } from '../../../util/isAdmin';
 
 export const runEditSequence = async (message: Message, user: User) => {
-  const channel = user.dmChannel ?? await user.createDM();
+  const channel = await getDirectMessageChannel(user);
   if (! channel) {
     console.warn(`Failed to open DM channel with user: ${user.username}`);
     return;
@@ -18,6 +20,15 @@ export const runEditSequence = async (message: Message, user: User) => {
     channel.send(`Edit session ended: ${reason}`);
     console.log(`Event edit session ended with reason "${reason}" for user: ${user.username}`);
   };
+
+  if (
+    (!isAdmin(user, message.guild))
+    &&
+    (user.id !== event.authorID)
+  ) {
+    endEditSequence(`Unauthorized to edit message. Please ask an admin for assistance.`);
+    return;
+  }
 
   channel.send(`Edit session open for event: (id) ${message.id}
 The current title is:
