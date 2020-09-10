@@ -2,10 +2,16 @@ import { Message, Client } from 'discord.js';
 import { db } from '../../database';
 import { attachReactions } from './util/attachReactions';
 import { constructBody } from './util/constructBody';
+import { deferDelete } from '../../util/defer';
+import { isWhitelisted } from '../config/api';
 
 export const onMessage = (app: Client) => async (message: Message) => {
   if (message.channel.type !== 'text') { return; }
   if (! message.content.startsWith('!event ')) { return; }
+  if (! await isWhitelisted('event', message)) { return; }
+
+  deferDelete(message);
+
   const title =  message.content.substring('!event '.length);
 
   const eventMessage = await message.channel.send(
@@ -24,9 +30,5 @@ export const onMessage = (app: Client) => async (message: Message) => {
     title,
     participant: {},
   }).then(() => console.log(`Committed event to db: ${title}`))
-    .catch(console.warn);
-
-  message.delete()
-    .then(() => console.log(`Deleted message: (id) ${message.id}`))
     .catch(console.warn);
 };
