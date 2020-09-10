@@ -3,14 +3,12 @@ import { getSnap } from '../../database';
 import { resolveChannelConfig } from './util/resolveChannelConfig';
 import { ChannelConfig } from './interfaces/ChannelConfig';
 import { KnownCommand } from './interfaces/KnownCommand';
+import { isAdmin } from '../../util/isAdmin';
 
 export const isWhitelisted = async (cmdName: string, message: Message) => {
   const channelID = message.channel.id;
-  const isAdmin = message
-    .guild.member(message.author)
-    .hasPermission('ADMINISTRATOR');
 
-  if (isAdmin) {
+  if (isAdmin(message.author, message.guild)) {
     // Admins are allowed to use all commands
     return true;
   }
