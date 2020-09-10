@@ -56,8 +56,8 @@ export const onReactionAdd = (app: Client) => async (_reaction: MessageReaction)
             return Promise.resolve();
           }
 
-          const participant = (await getSnap(`event/${reaction.message.id}/participant/${user.id}`))
-            .val() as Participant;
+          const participant = ((await getSnap(`event/${reaction.message.id}/participant/${user.id}`))
+            .val() as Participant) ?? { lastUpdated: null, name: null, status: null };
 
           if (participant.status !== status) {
             participant.status = status as any;
