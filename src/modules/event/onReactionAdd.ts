@@ -45,6 +45,12 @@ export const onReactionAdd = (app: Client) => async (_reaction: MessageReaction)
             .catch(console.warn);
 
           if (status === 'start_edit_session') {
+            /* Run edit sequence will return a promise,
+            but DO NOT await it!
+            Run edit sequence is async in order to be able to "await"
+            user response. If you await the promise returned by runEditSequence,
+            then you will freeze execution unnecessarily.
+            */
             runEditSequence(_reaction.message, user);
             return Promise.resolve();
           }
