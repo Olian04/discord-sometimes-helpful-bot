@@ -3,6 +3,7 @@ import './setup';
 import { Client } from 'discord.js';
 import * as eventModule from './modules/event';
 import * as configModule from './modules/config';
+import * as pollModule from './modules/poll';
 
 const app = new Client({
   /*
@@ -35,6 +36,7 @@ app.on('rateLimit', (data)  => {
 // Setting up modules
 configModule.setup(app);
 eventModule.setup(app);
+pollModule.setup(app);
 
 // Login
 app.login(process.env.DISCORD_SECRET)
