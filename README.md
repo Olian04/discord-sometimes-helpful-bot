@@ -9,6 +9,10 @@ Reacting with a :wrench: will alow you to change the title of the event. The bot
 
 ![](assets/better_logging_event_demo.png)
 
+## `!poll [title]; [option0]; (option1); (option2); .... (option9)`
+
+Create a poll with the given title and a range of up to 10 different vote options. The title and each option (excluding the last) needs to end with a semicolon `;`.
+
 ## `!list`
 
 Will PM you a list of all commands you have access to in the current channel. Buy default this list is empty.<br>

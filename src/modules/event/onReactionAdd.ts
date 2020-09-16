@@ -13,14 +13,12 @@ export const onReactionAdd = (app: Client) => async (_reaction: MessageReaction)
   if (_reaction.message.channel.type !== 'text') { return; }
   if (_reaction.message.author.id !== app.user.id) { return; }
 
-  const message = _reaction.message;
-
   if (! (await getSnap(`event/${_reaction.message.id}`)).exists()) {
     // This message was sent by the bot, but its no an event message.
-    // This message was probably sent by en earlier version of the bot.
     return;
   }
 
+  const message = _reaction.message;
   const reactions = _reaction.message.reactions.cache;
 
   await Promise.all(
@@ -46,11 +44,12 @@ export const onReactionAdd = (app: Client) => async (_reaction: MessageReaction)
             .catch(console.warn);
 
           if (status === 'start_edit_session') {
-            /* Run edit sequence will return a promise,
+            /* runEditSequence will return a promise,
             but DO NOT await it!
-            Run edit sequence is async in order to be able to "await"
+            runEditSequence is async in order to be able to "await"
             user response. If you await the promise returned by runEditSequence,
-            then you will freeze execution unnecessarily.
+            then you will freeze execution until the user responds
+            or an arbitrary timeout occurs.
             */
             runEditSequence(_reaction.message, user);
             return Promise.resolve();
