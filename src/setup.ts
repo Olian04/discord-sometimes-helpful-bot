@@ -21,7 +21,9 @@ if (err) console.warn(`An error occurred when configuring environment variables:
 else console.info(`Environment variables configured`);
 
 // Enable debug logging if in development mode
-console.logLevel = process.env.DEPLOY_ENVIRONMENT === 'development' ? 4 : 3;
+console.logLevel = 4; /* process.env.DEPLOY_ENVIRONMENT === 'development' ? 4 : 3;
+Commented out debug toggle as a test, to see how much of an issue having them print in production turns out to be.
+*/
 
 process.on('uncaughtExceptionMonitor', console.error);
 process.on('beforeExit', (exitCode) => console.info(`Process exiting with exit code: ${exitCode}`));
