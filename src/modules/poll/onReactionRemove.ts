@@ -1,5 +1,5 @@
 import { Client, MessageReaction, PartialUser, User } from 'discord.js';
-import { db, getSnap } from '../../database';
+import { db, exists, getSnap } from '../../database';
 import { VoteData } from './interfaces/VoteData';
 import { constructBody } from './util/constructBody';
 import { emojiNumberMap } from './util/emojiNumberMap';
@@ -14,8 +14,7 @@ export const onReactionRemove = (app: Client) => async (reaction: MessageReactio
   if (reaction.message.author.id !== app.user.id) { return; }
   if (user.bot) { return; }
 
-  const snap = await getSnap(`poll/${reaction.message.id}`);
-  if ( !(snap.exists()) ) {
+  if (!exists(`poll/${reaction.message.id}`)) {
     console.debug(`Skipping reaction (removed) ${reaction.emoji.name} on message ${reaction.message.id} because no POLL database entry was found for it.`);
     // This message was sent by the bot, but its no a voting message.
     return;
@@ -23,7 +22,7 @@ export const onReactionRemove = (app: Client) => async (reaction: MessageReactio
 
   const message = reaction.message;
 
-  const voteData = snap.toJSON() as VoteData;
+  const voteData = (await getSnap(`poll/${reaction.message.id}`)).toJSON() as VoteData;
 
   const emojiNumber = emojiNumberMap.indexOf(reaction.emoji.name);
   if (emojiNumber < 0) { return Promise.resolve(); }

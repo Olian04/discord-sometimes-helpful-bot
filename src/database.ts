@@ -13,4 +13,10 @@ const getRootRef = () => _database.database().ref(`${DBVersion}/${environment}/`
 
 export const db = getRootRef();
 
-export const getSnap = async (path: string) => (await db.child(path).once('value'));
+export const getSnap = async (path: string) => db.child(path).once('value');
+
+export const exists = async (path: string) => {
+  const snap = await getSnap(path)
+    .catch(console.error);
+  return snap && snap.exists();
+}

@@ -1,5 +1,5 @@
 import { MessageReaction, Client } from 'discord.js';
-import { db, getSnap } from '../../database';
+import { db, exists, getSnap } from '../../database';
 import { Event } from './interfaces/Event';
 import { reactionMap } from './util/reactionMap';
 import { runEditSequence } from './util/runEditSequence';
@@ -15,7 +15,7 @@ export const onReactionAdd = (app: Client) => async (_reaction: MessageReaction)
   if (message.channel.type !== 'text') { return; }
   if (message.author.id !== app.user.id) { return; }
 
-  if (! (await getSnap(`event/${message.id}`)).exists()) {
+  if (!exists(`event/${message.id}`)) {
     console.debug(`Skipping reaction (added) ${_reaction.emoji.name} on message ${message.id} because no EVENT database entry was found for it.`);
     // This message was sent by the bot, but its not an event message.
     return;
