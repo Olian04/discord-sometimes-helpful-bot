@@ -3,11 +3,12 @@ import { db, getSnap } from '../../database';
 import { VoteData } from './interfaces/VoteData';
 import { constructBody } from './util/constructBody';
 import { emojiNumberMap } from './util/emojiNumberMap';
+import { resolvePartialMessage, resolvePartialReaction, resolvePartialUser } from '../../util/resolvePartials';
 
 export const onReactionRemove = (app: Client) => async (reaction: MessageReaction, user: User | PartialUser) => {
-  if (reaction.partial) { await reaction.fetch(); }
-  if (reaction.message.partial) { await reaction.message.fetch(); }
-  if (user.partial) { await user.fetch(); }
+  await resolvePartialReaction(reaction);
+  await resolvePartialMessage(reaction.message);
+  user = await resolvePartialUser(user);
 
   if (reaction.message.channel.type !== 'text') { return; }
   if (reaction.message.author.id !== app.user.id) { return; }
@@ -15,6 +16,7 @@ export const onReactionRemove = (app: Client) => async (reaction: MessageReactio
 
   const snap = await getSnap(`poll/${reaction.message.id}`);
   if ( !(snap.exists()) ) {
+    console.debug(`Skipping reaction (removed) ${reaction.emoji.name} on message ${reaction.message.id} because no POLL database entry was found for it.`);
     // This message was sent by the bot, but its no a voting message.
     return;
   }

@@ -1,8 +1,9 @@
 import { Client, Message } from 'discord.js';
 import { db } from '../../database';
+import { resolvePartialMessage } from '../../util/resolvePartials';
 
 export const onMessageDeleted = (app: Client) => async (message: Message) => {
-  if (message.partial) { await message.fetch(); }
+  await resolvePartialMessage(message);
 
   if (message.channel.type !== 'text') { return; }
   if (message.author.id !== app.user.id) { return; }

@@ -5,28 +5,28 @@ import { reactionMap } from './util/reactionMap';
 import { runEditSequence } from './util/runEditSequence';
 import { constructBody } from './util/constructBody';
 import { Participant } from './interfaces/Participant';
+import { resolvePartialMessage, resolvePartialReaction } from '../../util/resolvePartials';
 
 export const onReactionAdd = (app: Client) => async (_reaction: MessageReaction) => {
-  if (_reaction.partial) { await _reaction.fetch(); }
-  if (_reaction.message.partial) { await _reaction.message.fetch(); }
+  const message = await resolvePartialMessage(
+    (await resolvePartialReaction(_reaction)).message
+  );
 
-  if (_reaction.message.channel.type !== 'text') { return; }
-  if (_reaction.message.author.id !== app.user.id) { return; }
+  if (message.channel.type !== 'text') { return; }
+  if (message.author.id !== app.user.id) { return; }
 
-  if (! (await getSnap(`event/${_reaction.message.id}`)).exists()) {
-    // This message was sent by the bot, but its no an event message.
+  if (! (await getSnap(`event/${message.id}`)).exists()) {
+    console.debug(`Skipping reaction (added) ${_reaction.emoji.name} on message ${message.id} because no EVENT database entry was found for it.`);
+    // This message was sent by the bot, but its not an event message.
     return;
   }
 
-  const message = _reaction.message;
   const reactions = _reaction.message.reactions.cache;
 
   await Promise.all(
     reactions.map(async (reaction) => {
-      if (reaction.partial) {
-        await reaction.fetch()
-          .catch(console.warn);
-      }
+      await resolvePartialReaction(reaction);
+
       if (! (reaction.emoji.name in reactionMap)) { return Promise.resolve(); }
 
       const status = reactionMap[reaction.emoji.name];
