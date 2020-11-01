@@ -24,7 +24,7 @@ export const onMessage = (app: Client) => async (message: Message) => {
   if (! eventMessage) { return; }
 
   attachReactions(eventMessage)
-    .then(() => `Attached reactions to event message: ${title}`);
+    .then(() => console.log(`Attached reactions to event message: ${title}`));
 
   db.child(`event/${eventMessage.id}`).set({
     authorID: message.author.id,

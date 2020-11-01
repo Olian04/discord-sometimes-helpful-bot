@@ -7,7 +7,7 @@ export const constructBody = (
   title: string,
   participants: Participant[],
   ) => {
-  console.debug(title, participants);
+  console.debug({title, participants});
   const participants_yes = participants
     .filter(({ status }) => status === 'yes')
     .sort((a, b) => a.lastUpdated - b.lastUpdated)

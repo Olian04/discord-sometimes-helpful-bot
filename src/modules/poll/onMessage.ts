@@ -30,9 +30,10 @@ export const onMessage = (app: Client) => async (message: Message) => {
     constructBody(voteData),
   );
 
-  attachReactions(msg, voteData.options.length);
+  attachReactions(msg, voteData.options.length)
+    .then(() => console.log(`Attached reactions to poll message: ${title}`));
 
   db.child(`poll/${msg.id}`).set(voteData)
-    .then(() => console.log(`Committed event to db: ${title}`))
+    .then(() => console.log(`Committed poll to db: ${title}`))
     .catch(console.warn);
 }
