@@ -1,5 +1,7 @@
+export type ParticipationStatus = 'yes' | 'no' | 'maybe';
+
 export interface Participant {
   name: string;
-  status: 'yes' | 'no' | 'maybe';
+  status: ParticipationStatus;
   lastUpdated: number;
 }

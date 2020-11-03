@@ -9,13 +9,11 @@ const graphSymbol = {
 const mongolianVowelSeparator = '᠎'; // NOT AN EMPTY STRING
 
 export const constructBody = (data: VoteData) => {
-  console.debug('constructBody', data);
+  console.debug({ voteData: data });
   const optionArray = Object.values(data.options);
   const largest = optionArray.reduce((a, {voteCount: b}) => Math.max(a, b), 0);
-  const options = optionArray
-    .map((op) => {
+  const options = optionArray.map((op) => {
     const barCount = largest === 0 ? 0 : Math.ceil((op.voteCount / largest) * graphSegments);
-
     return {
       title: op.title,
       bars: Array(barCount).fill(graphSymbol.full).join('')

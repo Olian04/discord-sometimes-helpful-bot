@@ -1,32 +1,32 @@
 import { MessageReaction, Client } from 'discord.js';
-import { db, getSnap } from '../../database';
+import { db, exists, getSnap } from '../../database';
 import { Event } from './interfaces/Event';
 import { reactionMap } from './util/reactionMap';
 import { runEditSequence } from './util/runEditSequence';
 import { constructBody } from './util/constructBody';
-import { Participant } from './interfaces/Participant';
+import { Participant, ParticipationStatus } from './interfaces/Participant';
+import { resolvePartialMessage, resolvePartialReaction, resolvePartialGuildMember, resolvePartialUser } from '../../util/resolvePartials';
 
 export const onReactionAdd = (app: Client) => async (_reaction: MessageReaction) => {
-  if (_reaction.partial) { await _reaction.fetch(); }
-  if (_reaction.message.partial) { await _reaction.message.fetch(); }
+  const message = await resolvePartialMessage(
+    (await resolvePartialReaction(_reaction)).message
+  );
 
-  if (_reaction.message.channel.type !== 'text') { return; }
-  if (_reaction.message.author.id !== app.user.id) { return; }
+  if (message.channel.type !== 'text') { return; }
+  if (message.author.id !== app.user.id) { return; }
 
-  if (! (await getSnap(`event/${_reaction.message.id}`)).exists()) {
-    // This message was sent by the bot, but its no an event message.
+  if (!exists(`event/${message.id}`)) {
+    console.debug(`Skipping reaction (added) ${_reaction.emoji.name} on message ${message.id} because no EVENT database entry was found for it.`);
+    // This message was sent by the bot, but its not an event message.
     return;
   }
 
-  const message = _reaction.message;
   const reactions = _reaction.message.reactions.cache;
 
   await Promise.all(
     reactions.map(async (reaction) => {
-      if (reaction.partial) {
-        await reaction.fetch()
-          .catch(console.warn);
-      }
+      await resolvePartialReaction(reaction);
+
       if (! (reaction.emoji.name in reactionMap)) { return Promise.resolve(); }
 
       const status = reactionMap[reaction.emoji.name];
@@ -39,8 +39,12 @@ export const onReactionAdd = (app: Client) => async (_reaction: MessageReaction)
 
       return Promise.all(
         users.map(async (user) => {
+          await resolvePartialUser(user);
           if (user.bot) { return Promise.resolve(); }
           reaction.users.remove(user)
+            .then(() =>
+              console.log(`Removed reaction ${reaction.emoji.name} by user "${user.username}" from message (id) ${message.id}`)
+            )
             .catch(console.warn);
 
           if (status === 'start_edit_session') {
@@ -51,20 +55,21 @@ export const onReactionAdd = (app: Client) => async (_reaction: MessageReaction)
             then you will freeze execution until the user responds
             or an arbitrary timeout occurs.
             */
-            runEditSequence(_reaction.message, user);
+            runEditSequence(message, user);
             return Promise.resolve();
           }
 
-          const participant = ((await getSnap(`event/${reaction.message.id}/participant/${user.id}`))
+          const participant = ((await getSnap(`event/${message.id}/participant/${user.id}`))
             .val() as Participant) ?? { lastUpdated: null, name: null, status: null };
 
           if (participant.status !== status) {
-            participant.status = status as any;
+            participant.status = status as ParticipationStatus;
             participant.lastUpdated = Date.now();
           }
-          participant.name = reaction.message.guild.member(user).displayName;
+          const { displayName } = await resolvePartialGuildMember(message.guild.member(user));
+          participant.name = displayName;
 
-          return db.child(`event/${reaction.message.id}/participant/${user.id}`).set(participant)
+          return db.child(`event/${message.id}/participant/${user.id}`).set(participant)
             .then(() =>
               console.log(`Participation on event "${eventTitle}" for user  "${participant.name}" set to "${status}"`)
             )
