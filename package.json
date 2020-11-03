@@ -24,10 +24,10 @@
   "homepage": "https://github.com/Olian04/discord-raid-bot#readme",
   "dependencies": {
     "@olian/typescript-helpers": "^2.2.1",
-    "@types/node": "^13.13.17",
+    "@types/node": "^13.13.30",
     "@types/node-emoji": "^1.8.1",
     "better-logging": "^4.4.0",
-    "discord.js": "^12.3.1",
+    "discord.js": "^12.4.1",
     "dotenv": "^8.2.0",
     "firebase-admin": "^8.13.0",
     "node-emoji": "^1.10.0",
