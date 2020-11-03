@@ -8,6 +8,7 @@ import { constructListBody } from '../util/constructListBody';
 import { KnownCommandsMap } from '../interfaces/KnownCommand';
 import { Whitelist } from '../interfaces/WhiteList';
 import { getDirectMessageChannel } from '../../../util/getDirectMessageChannel';
+import { isAdmin } from '../../../util/isAdmin';
 
 export const onMessage = async (message: Message) => {
   if (message.channel.type !== 'text') { return; }
@@ -39,12 +40,7 @@ export const onMessage = async (message: Message) => {
     responseBody += `Only admins may use commands in this channel.`
   }
 
-
-  const isAdmin = message
-    .guild.member(message.author)
-    .hasPermission('ADMINISTRATOR');
-
-  if (isAdmin) {
+  if (isAdmin(message.author, message.guild)) {
     responseBody += constructListBody(
       `\nAvailable admin commands:`,
       Object.keys(KnownCommandsMap) as Whitelist
