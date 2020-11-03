@@ -21,7 +21,7 @@ export const onReactionAdd = (app: Client) => async (_reaction: MessageReaction)
     return;
   }
 
-  const reactions = _reaction.message.reactions.cache;
+  const reactions = message.reactions.cache;
 
   await Promise.all(
     reactions.map(async (reaction) => {
