@@ -6,8 +6,9 @@ const emptySpacePlaceholder = '\t';
 export const constructBody = (
   title: string,
   participants: Participant[],
-  ) => {
+) => {
   console.debug({title, participants});
+
   const participants_yes = participants
     .filter(({ status }) => status === 'yes')
     .sort((a, b) => a.lastUpdated - b.lastUpdated)
@@ -19,9 +20,9 @@ export const constructBody = (
     .map(({ name }) => `- ${name}`);
 
   const participants_maybe = participants
-  .filter(({ status }) => status === 'maybe')
-  .sort((a, b) => a.lastUpdated - b.lastUpdated)
-  .map(({ name }) => `? ${name}`);
+    .filter(({ status }) => status === 'maybe')
+    .sort((a, b) => a.lastUpdated - b.lastUpdated)
+    .map(({ name }) => `? ${name}`);
 
   const display_participants = [
     ...participants_yes,
