@@ -7,11 +7,11 @@ import * as pollModule from './modules/poll';
 
 const app = new Client({
   /*
-  Partials makes the client auto cache the ID of messages, channels, and reactions
-  made before the bot started.
-  This will also fire events for partials that haven't yet been processed by the bot.
+  Partials makes the client auto cache the ID of messages, channels, reactions, users, and guild_members.
+  This will fire events for partials that haven't yet been processed by the bot.
+  This will also ensure that messages sent before the bot started are taken into account when reacting to message_reactions.
   */
-  partials: ['MESSAGE', 'CHANNEL', 'REACTION'],
+  partials: ['MESSAGE', 'CHANNEL', 'REACTION', 'USER', 'GUILD_MEMBER'],
 });
 
 app.on('ready', ()  => {
