@@ -4,12 +4,12 @@ const DBVersion = process.env.DATABASE_VERSION;
 const environment = process.env.DEPLOY_ENVIRONMENT;
 const firebaseConfig = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
 
-export const _database = firebase.initializeApp({
+export const firebaseAdmin = firebase.initializeApp({
   credential: firebase.credential.cert(firebaseConfig),
   databaseURL: `https://${firebaseConfig.project_id}.firebaseio.com`,
 });
 
-const getRootRef = () => _database.database().ref(`${DBVersion}/${environment}/`);
+const getRootRef = () => firebaseAdmin.database().ref(`${DBVersion}/${environment}/`);
 
 export const db = getRootRef();
 
@@ -20,3 +20,8 @@ export const exists = async (path: string) => {
     .catch(console.error);
   return snap && snap.exists();
 }
+
+// Log db connection
+db.once('value', (snap) => {
+  console.info(`Database connected ${snap.ref.parent.key}/${snap.key}`);
+});
