@@ -1,9 +1,10 @@
 import './setup';
 
-import { Client } from 'discord.js';
+import { Client, TextChannel } from 'discord.js';
 import * as eventModule from './modules/event';
 import * as configModule from './modules/config';
 import * as pollModule from './modules/poll';
+import * as diceRollerModule from './modules/diceRoller';
 
 const app = new Client({
   /*
@@ -14,7 +15,13 @@ const app = new Client({
   partials: ['MESSAGE', 'CHANNEL', 'REACTION', 'USER', 'GUILD_MEMBER'],
 });
 
-app.on('ready', ()  => {
+// Setting up modules
+configModule.setup(app);
+eventModule.setup(app);
+pollModule.setup(app);
+diceRollerModule.setup(app);
+
+app.on('ready', async ()  => {
   console.info(`Client ready`);
 
   // Set presence message
@@ -27,16 +34,33 @@ app.on('ready', ()  => {
     },
     status: 'online',
   }).catch(console.warn);
+
+  /*
+  // Cache all active messages
+  const { length: numberOfCachedMessages } = await Promise.all(
+    app.channels.cache
+      .filter((ch) => ch.isText())
+      .map(async (ch) => {
+        const channel = await ch.fetch() as TextChannel;
+        return Promise.all(
+          channel.messages.cache
+            .filter((mess) => mess.author === app.user)
+            .map((mess) => mess.fetch())
+            .map(async (mess) => {
+              const message = await mess;
+              const h = new message.reactions.cache.
+            })
+        );
+    })
+  );
+
+  console.info(`Pre-cached ${numberOfCachedMessages} bot message`);
+  */
 });
 
 app.on('rateLimit', (data)  => {
   console.warn(`Rate limiting in effect`, data);
 });
-
-// Setting up modules
-configModule.setup(app);
-eventModule.setup(app);
-pollModule.setup(app);
 
 // Login
 app.login(process.env.DISCORD_SECRET)
