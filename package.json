@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/Olian04/discord-raid-bot#readme",
   "dependencies": {
+    "@olian/dice-roller": "^2.0.0",
     "@olian/typescript-helpers": "^2.2.1",
     "@types/node": "^13.13.30",
     "@types/node-emoji": "^1.8.1",

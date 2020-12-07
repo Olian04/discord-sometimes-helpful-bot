@@ -15,6 +15,10 @@ Create a poll with the given title and a range of up to 10 different vote option
 
 ![](assets/poll_demo.png)
 
+## `!roll [diceString]`
+
+Rolls a set of dice. See [@olian/dice-roller](https://github.com/Olian04/dice-roller) for further reference.
+
 ## `!list`
 
 Will PM you a list of all commands you have access to in the current channel. Buy default this list is empty.<br>
