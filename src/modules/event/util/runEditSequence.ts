@@ -31,6 +31,7 @@ export const runEditSequence = async (message: Message, user: User) => {
   }
 
   channel.send(`Edit session open for event: (id) ${message.id}
+The edit session will close on its own in 1 minute.
 The current title is:
 \`\`\`text
 ${event.title.trim()}
