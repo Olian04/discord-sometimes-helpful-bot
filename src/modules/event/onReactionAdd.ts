@@ -45,7 +45,9 @@ export const onReactionAdd = (app: Client) => async (_reaction: MessageReaction)
             .then(() =>
               console.log(`Removed reaction ${reaction.emoji.name} by user "${user.username}" from message (id) ${message.id}`)
             )
-            .catch(console.warn);
+            .catch(() => {
+              console.warn(`Failed to remove reaction ${reaction.emoji.name} by user "${user.username}" from message (id) ${message.id}`)
+            });
 
           if (status === 'start_edit_session') {
             /* runEditSequence will return a promise,
