@@ -1,12 +1,17 @@
 import './setup';
-
-import { Client, TextChannel } from 'discord.js';
-import * as eventModule from './modules/event';
-import * as configModule from './modules/config';
-import * as pollModule from './modules/poll';
-import * as diceRollerModule from './modules/diceRoller';
+import { Client } from 'discord.js';
+import fs from 'fs';
+import path from 'path';
+import { Module } from './types/Module';
+import { registerModule } from './util/registerModule';
 
 const app = new Client({
+  intents: [
+    'GUILD_INTEGRATIONS',
+    'GUILD_MESSAGES',
+    'GUILD_MEMBERS',
+    'GUILD_MESSAGE_REACTIONS',
+  ],
   /*
   Partials makes the client auto cache the ID of messages, channels, reactions, users, and guild_members.
   This will fire events for partials that haven't yet been processed by the bot.
@@ -16,46 +21,22 @@ const app = new Client({
 });
 
 // Setting up modules
-configModule.setup(app);
-eventModule.setup(app);
-pollModule.setup(app);
-diceRollerModule.setup(app);
+(async () => {
+  const moduleRootPath = path.join(__dirname, 'modules');
+
+  const modules = (await Promise.all(
+    fs.readdirSync(moduleRootPath).map(dirName =>
+      import(path.join(moduleRootPath, dirName))
+    ),
+  )).map(rawImport => rawImport.default as Module);
+
+  modules.forEach(module => {
+    registerModule(app, module);
+  });
+})();
 
 app.on('ready', async ()  => {
   console.info(`Client ready`);
-
-  // Set presence message
-  app.user.setPresence({
-    afk: false,
-    activity: {
-      type: 'LISTENING',
-      name: `!event`,
-      url: 'https://github.com/Olian04/discord-sometimes-helpful-bot',
-    },
-    status: 'online',
-  }).catch(console.warn);
-
-  /*
-  // Cache all active messages
-  const { length: numberOfCachedMessages } = await Promise.all(
-    app.channels.cache
-      .filter((ch) => ch.isText())
-      .map(async (ch) => {
-        const channel = await ch.fetch() as TextChannel;
-        return Promise.all(
-          channel.messages.cache
-            .filter((mess) => mess.author === app.user)
-            .map((mess) => mess.fetch())
-            .map(async (mess) => {
-              const message = await mess;
-              const h = new message.reactions.cache.
-            })
-        );
-    })
-  );
-
-  console.info(`Pre-cached ${numberOfCachedMessages} bot message`);
-  */
 });
 
 app.on('rateLimit', (data)  => {

@@ -1,8 +1,8 @@
 import dotenv from 'dotenv';
 import betterLogging from 'better-logging';
 
-// Populating environment variables from .env file if present
-dotenv.config();
+// Populating environment variables
+const err = dotenv.config().error;
 
 // Setting up logging library
 betterLogging(console, {
@@ -16,6 +16,9 @@ betterLogging(console, {
     ctx.msg
   ].join(''),
 });
+
+if (err) console.warn(`An error occurred when configuring environment variables: ${err}`);
+else console.info(`Environment variables configured`);
 
 // Enable debug logging if in development mode
 console.logLevel = 4; /* process.env.DEPLOY_ENVIRONMENT === 'development' ? 4 : 3;

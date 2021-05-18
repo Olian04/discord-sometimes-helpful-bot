@@ -1,4 +1,4 @@
-import { Guild, GuildMember, Message, MessageReaction, PartialGuildMember, PartialMessage, PartialUser, User } from 'discord.js';
+import { GuildMember, Message, MessageReaction, PartialGuildMember, PartialMessage, PartialUser, User } from 'discord.js';
 
 export const resolvePartialReaction = async (reaction: MessageReaction) => {
   if (reaction.partial) { await reaction.fetch().catch(console.warn); }
