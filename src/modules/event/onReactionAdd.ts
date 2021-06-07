@@ -66,7 +66,7 @@ export const onReactionAdd = (app: Client) => async (_reaction: MessageReaction)
             participant.status = status as ParticipationStatus;
             participant.lastUpdated = Date.now();
           }
-          const { displayName } = await resolvePartialGuildMember(message.guild.member(user));
+          const { displayName } = await resolvePartialGuildMember(message.guild.members.cache.get(user.id));
           participant.name = displayName;
 
           return db.child(`event/${message.id}/participant/${user.id}`).set(participant)

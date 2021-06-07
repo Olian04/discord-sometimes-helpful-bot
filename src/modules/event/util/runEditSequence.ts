@@ -3,7 +3,7 @@ import { db, getSnap } from '../../../database';
 import { Event } from '../interfaces/Event';
 import { constructBody } from './constructBody';
 import { getDirectMessageChannel } from '../../../util/getDirectMessageChannel';
-import { isAdmin } from '../../../util/isAdmin';
+import { isAdmin } from '../../../util/checkPermissions';
 
 export const runEditSequence = async (message: Message, user: User) => {
   const channel = await getDirectMessageChannel(user);
@@ -22,7 +22,7 @@ export const runEditSequence = async (message: Message, user: User) => {
   };
 
   if (
-    (!isAdmin(user, message.guild))
+    (!isAdmin(message.guild, user.id))
     &&
     (user.id !== event.authorID)
   ) {

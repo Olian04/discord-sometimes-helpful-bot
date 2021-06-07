@@ -1,9 +1,11 @@
 import './setup';
-import { Client } from 'discord.js';
-import fs from 'fs';
-import path from 'path';
-import { Module } from './types/Module';
-import { registerModule } from './util/registerModule';
+import { Client, version } from 'discord.js';
+import * as eventModule from './modules/event';
+
+console.debug(`Architecture ${process.arch}`);
+console.debug(`Node.js ${process.version}`);
+console.debug(`V8 ${process.versions.v8}`);
+console.debug(`Discord.js ${version}`);
 
 const app = new Client({
   intents: [
@@ -20,23 +22,12 @@ const app = new Client({
   partials: ['MESSAGE', 'CHANNEL', 'REACTION', 'USER', 'GUILD_MEMBER'],
 });
 
-// Setting up modules
-(async () => {
-  const moduleRootPath = path.join(__dirname, 'modules');
-
-  const modules = (await Promise.all(
-    fs.readdirSync(moduleRootPath).map(dirName =>
-      import(path.join(moduleRootPath, dirName))
-    ),
-  )).map(rawImport => rawImport.default as Module);
-
-  modules.forEach(module => {
-    registerModule(app, module);
-  });
-})();
 
 app.on('ready', async ()  => {
   console.info(`Client ready`);
+  eventModule.setup(app);
+
+  console.debug(`Startup time ${process.uptime().toFixed(2)} seconds`);
 });
 
 app.on('rateLimit', (data)  => {
