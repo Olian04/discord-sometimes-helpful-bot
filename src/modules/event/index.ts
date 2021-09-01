@@ -92,13 +92,13 @@ export const initialize = (app: Client) => {
 
       interaction.reply({
         ephemeral: true,
-        content: 'Event created.\n_This is a confirmation message, only you can see this message. It can safely be deleted or dismissed_'
+        content: 'Event created!'
       });
     } catch (err) {
       console.error('Create event', err);
       interaction.reply({
         ephemeral: true,
-        content: 'Something went wrong. Event creation failed!\n_This is an error message, only you can see this message. It can safely be deleted or dismissed_'
+        content: 'Something went wrong. Event creation failed!'
       });
     }
   });
