@@ -1,25 +1,27 @@
+import { Renderer } from 'chatflux';
 import { emoji } from 'node-emoji';
-import { Participant } from '../interfaces/Participant';
+import { EventState } from '../types/EventState';
 
 const emptySpacePlaceholder = '\t';
 
-export const constructBody = (
-  title: string,
-  participants: Participant[],
-) => {
-  console.debug({title, participants});
+export const renderer: Renderer<EventState, string> = ({
+  participants, title,
+}) => {
+  console.debug('Rendering', {title, participants});
 
-  const participants_yes = participants
+  const participationArray = Object.values(participants);
+
+  const participants_yes = participationArray
     .filter(({ status }) => status === 'yes')
     .sort((a, b) => a.lastUpdated - b.lastUpdated)
     .map(({ name }) => `+ ${name}`);
 
-  const participants_no = participants
+  const participants_no = participationArray
     .filter(({ status }) => status === 'no')
     .sort((a, b) => a.lastUpdated - b.lastUpdated)
     .map(({ name }) => `- ${name}`);
 
-  const participants_maybe = participants
+  const participants_maybe = participationArray
     .filter(({ status }) => status === 'maybe')
     .sort((a, b) => a.lastUpdated - b.lastUpdated)
     .map(({ name }) => `? ${name}`);
@@ -46,4 +48,4 @@ ${display_participants.join('\n') || emptySpacePlaceholder}
 `React with ${emoji.thumbsup} if you can attend, ` +
 `${emoji.thumbsdown} if you can't attend, ` +
 `${emoji.grey_question} if you're unsure.`;
-};
+}

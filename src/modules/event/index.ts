@@ -1,14 +1,105 @@
+import { Client, MessageActionRow, MessageButton } from 'discord.js';
+import { emoji } from 'node-emoji';
+import { Event } from './flux';
 
-import { Client } from 'discord.js';
-import eventCommand from './commands/event';
-import { onReactionAdd } from './onReactionAdd';
-import { onMessageDeleted } from './onMessageDeleted';
-import { registerCommandInGuilds } from '../../util/registerCommand';
-import { delegateCommandInteraction } from '../../util/delegateCommandInteraction';
+export { eventCommand } from './command';
 
-export const setup = (app: Client) => {
-  registerCommandInGuilds(app, eventCommand.config);
-  app.on('interaction', delegateCommandInteraction(app, [ eventCommand ]));
-  app.on('messageReactionAdd', onReactionAdd(app));
-  app.on('messageDelete', onMessageDeleted(app));
+export const initialize = (app: Client) => {
+  app.on('interactionCreate', async interaction => {
+    if (!interaction.isButton()) return;
+    const id = interaction.message.id;
+    if (!Event.has(id)) return;
+
+    try {
+
+      switch (interaction.customId) {
+        case 'event_yes':
+          await Event.dispatch(id, {
+            type: 'updateParticipation',
+            userID: interaction.user.id,
+            userNamer: interaction.member.user.username,
+            participationStatus: 'yes',
+          });
+          break;
+        case 'event_no':
+          await Event.dispatch(id, {
+            type: 'updateParticipation',
+            userID: interaction.user.id,
+            userNamer: interaction.member.user.username,
+            participationStatus: 'no',
+          });
+          break;
+        case 'event_maybe':
+          await Event.dispatch(id, {
+            type: 'updateParticipation',
+            userID: interaction.user.id,
+            userNamer: interaction.member.user.username,
+            participationStatus: 'maybe',
+          });
+          break;
+        default:
+          throw new Error(`Unexpected customId for event message interaction: ${interaction.customId}`);
+        }
+
+        const body = await Event.get(id);
+        interaction.update({
+          content: body,
+        });
+      } catch (err) {
+      console.error(err);
+      interaction.reply({
+        ephemeral: true,
+        content: 'Something went wrong... please try again later. If the issue persists please contact and administrator.'
+      })
+    }
+  });
+
+  app.on('interactionCreate', async interaction => {
+    if (!interaction.isCommand()) return;
+    if (interaction.commandName !== 'event') return;
+
+    try {
+      const commandChannel = interaction.channel;
+      const eventMsg = await commandChannel.send('Loading...');
+
+      const title = interaction.options.getString('title');
+
+      await Event.create(eventMsg.id);
+      const body = await Event.update(eventMsg.id, {
+        type: 'updateTitle',
+        title,
+      });
+      await eventMsg.edit({
+        content: body,
+        components: [
+          new MessageActionRow()
+            .addComponents(
+                new MessageButton()
+                  .setStyle('SUCCESS')
+                  .setEmoji(emoji.thumbsup)
+                  .setCustomId('event_yes'),
+              new MessageButton()
+                  .setStyle('DANGER')
+                  .setEmoji(emoji.thumbsdown)
+                  .setCustomId('event_no'),
+              new MessageButton()
+                  .setStyle('SECONDARY')
+                  .setEmoji(emoji.grey_question)
+                  .setCustomId('event_maybe'),
+            )
+        ]
+      });
+
+      interaction.reply({
+        ephemeral: true,
+        content: 'Event created.\n_This is a confirmation message, only you can see this message. It can safely be deleted or dismissed_'
+      });
+    } catch (err) {
+      console.error('Create event', err);
+      interaction.reply({
+        ephemeral: true,
+        content: 'Something went wrong. Event creation failed!\n_This is an error message, only you can see this message. It can safely be deleted or dismissed_'
+      });
+    }
+  });
 }
