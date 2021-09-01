@@ -7,9 +7,4 @@ export const eventCommand = new SlashCommandBuilder()
     .setName('title')
     .setDescription('The title of your event')
     .setRequired(true)
-  )
-  .addIntegerOption(_=>_
-    .setName('group_size')
-    .setDescription('How maybe people can join the event')
-    .setRequired(false)
   );
